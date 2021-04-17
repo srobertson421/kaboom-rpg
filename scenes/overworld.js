@@ -17,11 +17,13 @@ import {
   go,
   text,
   origin,
-  action
+  action,
+  play
 } from '../engine.js';
 import levels from '../levels.js';
 import currentLevel from '../state/currentLevel.js';
 import playerPos from '../state/playerPos.js';
+import { overworldMusic } from '../state/music.js';
 
 const PLAYER_SPEED = 75;
 
@@ -82,7 +84,6 @@ function playerControls() {
 }
 
 const overworldScene = () => {
-
   scene('battle', () => {
     add([
       text('BATTLE', 28),
@@ -97,6 +98,12 @@ const overworldScene = () => {
 
   return scene('overworld', () => {
     gravity(0);
+
+    if(!overworldMusic.value) {
+      overworldMusic.value = play('overworldSound', { loop: true });
+    } else {
+      overworldMusic.value.resume();
+    }
   
     const map = addLevel(levels[currentLevel.value], {
       width: 16,
@@ -122,6 +129,7 @@ const overworldScene = () => {
       const randomChance = Math.round(rand(1,75));
   
       if(randomChance === 45) {
+        overworldMusic.value.pause();
         go('battle');
       }
     });

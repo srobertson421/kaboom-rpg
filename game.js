@@ -1,7 +1,8 @@
 import {
   start,
   init,
-  loadSprite
+  loadSprite,
+  loadSound
 } from './engine.js';
 import overworldScene from './scenes/overworld.js';
 
@@ -22,6 +23,8 @@ loadSprite('character', '/assets/characters.png', {
     walkUp: [36,38]
   }
 });
+
+loadSound('overworldSound', '/assets/overworld.ogg');
 
 init({
   // canvas: document.getElementById('game'),
