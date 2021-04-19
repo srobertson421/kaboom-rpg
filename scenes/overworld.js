@@ -183,8 +183,8 @@ const overworldScene = () => {
         camPos(380, camPos().y);
       }
 
-      if(camPos().y <= 100) {
-        camPos(camPos().x, 100);
+      if(camPos().y <= 85) {
+        camPos(camPos().x, 85);
       } else if(camPos().y >= 220) {
         camPos(camPos().x, 220);
       }
