@@ -136,7 +136,7 @@ const overworldScene = () => {
         // overworldMusic.value.pause();
         go('battle');
       }
-    });camPos().y
+    });
   
     playerControls();
 
