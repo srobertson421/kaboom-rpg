@@ -143,8 +143,10 @@ const overworldScene = () => {
     action('player', player => {
       playerPos.value = player.pos;
 
-      if(player.pos.x > width() + 10) {
-        playerPos.value = vec2(10, player.pos.y);
+      
+
+      if(player.pos.x > width() + 80) {
+        playerPos.value = vec2(-9, player.pos.y);
 
         if(currentLevel.value === '00') {
           currentLevel.value = '01';
@@ -154,7 +156,7 @@ const overworldScene = () => {
           go('overworld');
         }
       } else if(player.pos.x < -10) {
-        playerPos.value = vec2(width() - 10, player.pos.y);
+        playerPos.value = vec2(width() + 80, player.pos.y);
 
         if(currentLevel.value === '02') {
           currentLevel.value = '01';
@@ -167,17 +169,28 @@ const overworldScene = () => {
 
       camPos(player.pos);
 
-      if(camPos().x <= map.getPos().x) {
-        camPos(map.getPos().x, camPos().y);
-      } else if(camPos().x >= (map.getPos().x + map.width())) {
-        camPos((map.getPos().x + map.width()), camPos().y);
+
+      // console.log('camPos.x : ', camPos().x);
+      // console.log('camPos.y : ', camPos().y);
+      // console.log('map.getPos.x : ', map.getPos());
+      // // console.log('map.getPos.y : ', map.getPos().y);
+      // console.log('map.width : ', map.width());
+      // console.log('map.height : ', map.height());
+
+      if(camPos().x <= 100) {
+        camPos(100, camPos().y);
+      } else if(camPos().x >= 380) {
+        camPos(380, camPos().y);
       }
 
-      if(camPos().y <= map.getPos().y) {
-        camPos(camPos().x, map.getPos().y);
-      } else if(camPos().y >= (map.getPos().y + map.height())) {
-        camPos(camPos().x, (map.getPos().y + map.height()));
+      if(camPos().y <= 100) {
+        camPos(camPos().x, 100);
+      } else if(camPos().y >= 220) {
+        camPos(camPos().x, 220);
       }
+
+
+      
     });
 
     // there's no spatial hashing yet, if too many blocks causing lag, consider hard disabling collision resolution from blocks far away by turning off 'solid'
