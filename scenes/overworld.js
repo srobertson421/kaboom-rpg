@@ -42,7 +42,7 @@ function playerControls() {
 
   keyRelease('left', () => {
     player.stop();
-    player.frame = 13;
+    player.frame = 6;
   });
 
   keyDown('right', () => {
@@ -55,7 +55,7 @@ function playerControls() {
 
   keyRelease('right', () => {
     player.stop();
-    player.frame = 25;
+    player.frame = 9;
   });
 
   keyDown('up', () => {
@@ -68,7 +68,7 @@ function playerControls() {
 
   keyRelease('up', () => {
     player.stop();
-    player.frame = 37;
+    player.frame = 3;
   });
 
   keyDown('down', () => {
@@ -81,7 +81,7 @@ function playerControls() {
 
   keyRelease('down', () => {
     player.stop();
-    player.frame = 1;
+    player.frame = 0;
   });
 }
 

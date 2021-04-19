@@ -13,14 +13,25 @@ loadSprite('tileSheet', '/assets/basictiles.png', {
   sliceY: 15
 });
 
-loadSprite('character', '/assets/characters.png', {
-  sliceX: 12,
-  sliceY: 8,
+// loadSprite('character', '/assets/characters.png', {
+//   sliceX: 12,
+//   sliceY: 8,
+//   anims: {
+//     walkDown: [0,2],
+//     walkLeft: [12,14],
+//     walkRight: [24,26],
+//     walkUp: [36,38]
+//   }
+// });
+
+loadSprite('character', '/assets/wizard.png', {
+  sliceX: 3,
+  sliceY: 4,
   anims: {
     walkDown: [0,2],
-    walkLeft: [12,14],
-    walkRight: [24,26],
-    walkUp: [36,38]
+    walkLeft: [6,8],
+    walkRight: [9,11],
+    walkUp: [3,5]
   }
 });
 
