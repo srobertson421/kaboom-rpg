@@ -18,7 +18,9 @@ import {
   text,
   origin,
   action,
-  play
+  play,
+  camScale,
+  camPos
 } from '../engine.js';
 import levels from '../levels.js';
 import currentLevel from '../state/currentLevel.js';
@@ -99,11 +101,13 @@ const overworldScene = () => {
   return scene('overworld', () => {
     gravity(0);
 
-    if(!overworldMusic.value) {
-      overworldMusic.value = play('overworldSound', { loop: true });
-    } else {
-      overworldMusic.value.resume();
-    }
+    // if(!overworldMusic.value) {
+    //   overworldMusic.value = play('overworldSound', { loop: true });
+    // } else {
+    //   overworldMusic.value.resume();
+    // }
+
+    camScale(2);
   
     const map = addLevel(levels[currentLevel.value], {
       width: 16,
@@ -129,10 +133,10 @@ const overworldScene = () => {
       const randomChance = Math.round(rand(1,75));
   
       if(randomChance === 45) {
-        overworldMusic.value.pause();
+        // overworldMusic.value.pause();
         go('battle');
       }
-    });
+    });camPos().y
   
     playerControls();
 
@@ -159,6 +163,20 @@ const overworldScene = () => {
           currentLevel.value = '00';
           go('overworld');
         }
+      }
+
+      camPos(player.pos);
+
+      if(camPos().x <= map.getPos().x) {
+        camPos(map.getPos().x, camPos().y);
+      } else if(camPos().x >= (map.getPos().x + map.width())) {
+        camPos((map.getPos().x + map.width()), camPos().y);
+      }
+
+      if(camPos().y <= map.getPos().y) {
+        camPos(camPos().x, map.getPos().y);
+      } else if(camPos().y >= (map.getPos().y + map.height())) {
+        camPos(camPos().x, (map.getPos().y + map.height()));
       }
     });
 

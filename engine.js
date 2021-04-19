@@ -30,5 +30,7 @@ export const wait = engine.wait;
 export const loop = engine.loop;
 export const addLevel = engine.addLevel;
 export const vec2 = engine.vec2;
+export const camScale = engine.camScale;
+export const camPos = engine.camPos;
 
 export default engine;
