@@ -1,13 +1,8 @@
 import {
   scene,
   gravity,
-  addLevel,
-  sprite,
-  vec2,
   camScale
 } from '../engine.js';
-import levels from '../levels.js';
-import currentLevel from '../state/currentLevel.js';
 import { overworldMusic } from '../state/music.js';
 
 import {
@@ -16,6 +11,7 @@ import {
   playerCollisions,
   playerControls
 } from '../entities/player.js';
+import createCurrentLevel from '../utils/createCurrentLevel.js';
 
 const overworldScene = () => {
   return scene('overworld', () => {
@@ -29,19 +25,7 @@ const overworldScene = () => {
 
     camScale(2);
   
-    const map = addLevel(levels[currentLevel.value], {
-      width: 16,
-      height: 16,
-      pos: vec2(0, 0),
-      'g': [
-        sprite('tileSheet', { frame: 11 }),
-        'grass'
-      ],
-      'f': [
-        sprite('tileSheet', { frame: 12 }),
-        'flower'
-      ]
-    });
+    createCurrentLevel();
   
     addPlayer();
   
