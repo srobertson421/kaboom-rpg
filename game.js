@@ -5,6 +5,7 @@ import {
   loadSound
 } from './engine.js';
 import overworldScene from './scenes/overworld.js';
+import battleScene from './scenes/battle.js';
 
 // kaboom.debug.showArea = true;
 
@@ -44,5 +45,6 @@ init({
 });
 
 overworldScene();
+battleScene();
 
 start('overworld');
