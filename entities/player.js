@@ -134,10 +134,6 @@ export function playerActions() {
     }
 
     camPos(player.pos);  
-    
-    
-
-
 
     if(camPos().x <= screenLeftWidthOffset) {
       camPos(screenLeftWidthOffset, camPos().y);
