@@ -16,6 +16,7 @@ import {
 } from '../engine.js';
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
+import SCALE from '../state/scale.js';
 
 const PLAYER_SPEED = 75;
 
@@ -98,7 +99,7 @@ export function playerActions() {
   action('player', player => {
     playerPos.value = player.pos;
 
-    if(player.pos.x > width() + 80) {
+    if(player.pos.x > 500) {
       playerPos.value = vec2(-9, player.pos.y);
 
       if(currentLevel.value === '00') {
@@ -109,7 +110,7 @@ export function playerActions() {
         go('overworld');
       }
     } else if(player.pos.x < -10) {
-      playerPos.value = vec2(width() + 80, player.pos.y);
+      playerPos.value = vec2(500, player.pos.y);
 
       if(currentLevel.value === '02') {
         currentLevel.value = '01';
@@ -122,10 +123,10 @@ export function playerActions() {
 
     camPos(player.pos);
 
-    if(camPos().x <= 100) {
-      camPos(100, camPos().y);
-    } else if(camPos().x >= 380) {
-      camPos(380, camPos().y);
+    if(camPos().x <= 120) {
+      camPos(120, camPos().y);
+    } else if(camPos().x >= 360) {
+      camPos(360, camPos().y);
     }
 
     if(camPos().y <= 85) {

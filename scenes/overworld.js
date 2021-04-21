@@ -4,6 +4,7 @@ import {
   camScale
 } from '../engine.js';
 import { overworldMusic } from '../state/music.js';
+import SCALE from '../state/scale.js'
 
 import {
   addPlayer,
@@ -23,7 +24,7 @@ const overworldScene = () => {
     //   overworldMusic.value.resume();
     // }
 
-    camScale(2);
+    camScale(SCALE.value);
   
     createCurrentLevel();
   
