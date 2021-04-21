@@ -12,7 +12,8 @@ import {
   action,
   vec2,
   camPos,
-  width
+  width,
+  height
 } from '../engine.js';
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
@@ -95,6 +96,17 @@ export function playerCollisions() {
   });
 }
 
+const levelWidth = 480 * (SCALE.value * 2);
+const levelHeight = 304 * (SCALE.value * 2);
+
+const widthRatio = 480 / levelWidth; 
+const heightRatio = 304 / levelHeight; 
+
+const screenRightWidthOffset = 480 - (window.innerWidth / 2) * widthRatio;
+const screenLeftWidthOffset = (window.innerWidth / 2) * widthRatio;
+const screenBottomHeightOffset = 304 - (window.innerHeight / 2) * heightRatio;
+const screenTopHeightOffset = (window.innerHeight / 2) * heightRatio;
+
 export function playerActions() {
   action('player', player => {
     playerPos.value = player.pos;
@@ -121,18 +133,22 @@ export function playerActions() {
       }
     }
 
-    camPos(player.pos);
+    camPos(player.pos);  
+    
+    
 
-    if(camPos().x <= 120) {
-      camPos(120, camPos().y);
-    } else if(camPos().x >= 360) {
-      camPos(360, camPos().y);
+
+
+    if(camPos().x <= screenLeftWidthOffset) {
+      camPos(screenLeftWidthOffset, camPos().y);
+    } else if(camPos().x >= screenRightWidthOffset) {
+      camPos(screenRightWidthOffset, camPos().y);
     }
 
-    if(camPos().y <= 85) {
-      camPos(camPos().x, 85);
-    } else if(camPos().y >= 220) {
-      camPos(camPos().x, 220);
+    if(camPos().y <= screenTopHeightOffset) {
+      camPos(camPos().x, screenTopHeightOffset);
+    } else if(camPos().y >= screenBottomHeightOffset) {
+      camPos(camPos().x, screenBottomHeightOffset);
     }
   });
 }
