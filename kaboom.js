@@ -1,7 +1,7 @@
 /*
 
 kaboom.js
-v0.2.0
+v0.3.0
 
 a JavaScript game programming library
 
@@ -80,10 +80,13 @@ debug utils
 	const kaboom = {};
 	
 	kaboom.debug = {
+		paused: false,
 		timeScale: 1,
 		showArea: false,
-		showLog: false,
 		hoverInfo: false,
+		showLog: false,
+		logTime: 6,
+		logMax: 32,
 	};
 	
 	/*
@@ -270,7 +273,7 @@ debug utils
 	
 						})
 						.catch(() => {
-							console.error(`failed to load sprite '${name}' from '${src}'`);
+							error(`failed to load sprite '${name}' from '${src}'`);
 						})
 						;
 	
@@ -287,7 +290,7 @@ debug utils
 					};
 	
 					img.onerror = () => {
-						console.error(`failed to load sprite '${name}' from '${src}'`);
+						error(`failed to load sprite '${name}' from '${src}'`);
 						loader.done();
 					};
 	
@@ -342,7 +345,7 @@ debug utils
 	function getSprite(name) {
 		const sprite = assets.sprites[name];
 		if (!sprite) {
-			console.error(`sprite not found: '${name}'`);
+			error(`sprite not found: '${name}'`);
 		}
 		return {
 	
@@ -428,12 +431,12 @@ debug utils
 							audio.sounds[name] = buf;
 							resolve(buf);
 						}, (err) => {
-							console.error(`failed to decode audio: ${name}`);
+							error(`failed to decode audio: ${name}`);
 							loader.done();
 						});
 					})
 					.catch((err) => {
-						console.error(`failed to load sound '${name}' from '${src}'`);
+						error(`failed to load sound '${name}' from '${src}'`);
 						loader.done();
 					})
 					;
@@ -471,6 +474,7 @@ debug utils
 		mousePos: vec2(0, 0),
 		time: 0.0,
 		realTime: 0.0,
+		skipTime: false,
 		dt: 0.0,
 		scale: 1,
 	};
@@ -489,11 +493,14 @@ debug utils
 		"right",
 		"up",
 		"down",
+		"f7",
+		"f8",
 	];
 	
 	// TODO: make this not global?
 	let gl;
 	
+	// TODO: separate lower-level appInit() and exposed init()
 	function init(conf = {}) {
 	
 		let canvas = conf.canvas;
@@ -585,6 +592,23 @@ debug utils
 		});
 	
 		canvas.focus();
+	
+		document.addEventListener("visibilitychange", (e) => {
+			switch (document.visibilityState) {
+				case "visible":
+					// prevent a surge of dt() when switch back after the tab being hidden for a while
+					app.skipTime = true;
+					audio.ctx.resume();
+					break;
+				case "hidden":
+					audio.ctx.suspend();
+					break;
+			}
+		});
+	
+		if (conf.debug) {
+			kaboom.debug.showLog = true;
+		}
 	
 	}
 	
@@ -761,7 +785,7 @@ debug utils
 	
 		gfx.prog.unbind();
 		gfx.mesh.unbind();
-		gfx.curTex = undefined;
+		gfx.curTex = null;
 	
 	}
 	
@@ -937,7 +961,7 @@ debug utils
 		var msg = gl.getShaderInfoLog(vertShader);
 	
 		if (msg) {
-			console.error(msg);
+			error(msg);
 		}
 	
 		const fragShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -948,7 +972,7 @@ debug utils
 		var msg = gl.getShaderInfoLog(fragShader);
 	
 		if (msg) {
-			console.error(msg);
+			error(msg);
 		}
 	
 		const id = gl.createProgram();
@@ -965,7 +989,7 @@ debug utils
 		var msg = gl.getProgramInfoLog(id);
 	
 		if (msg) {
-			console.error(msg);
+			error(msg);
 		}
 	
 		return {
@@ -1265,7 +1289,7 @@ debug utils
 		const font = assets.fonts[fontName];
 	
 		if (!font) {
-			console.error(`font not found: '${fontName}'`);
+			error(`font not found: '${fontName}'`);
 			return {
 				width: 0,
 				height: 0,
@@ -1388,7 +1412,7 @@ debug utils
 		const sound = audio.sounds[id];
 	
 		if (!sound) {
-			console.error(`sound not found: "${id}"`);
+			error(`sound not found: "${id}"`);
 			return;
 		}
 	
@@ -1445,6 +1469,9 @@ debug utils
 			},
 	
 			detune(val) {
+				if (!srcNode.detune) {
+					return 0;
+				}
 				if (val !== undefined) {
 					srcNode.detune.value = Math.clamp(val, -1200, 1200);
 				}
@@ -1922,7 +1949,7 @@ debug utils
 					this.seed = (A * this.seed + C) % M;
 					return this.seed / M;
 				} else {
-					console.error("invalid param to rand()");
+					error("invalid param to rand()");
 				}
 			},
 		};
@@ -1996,6 +2023,7 @@ debug utils
 		curScene: undefined,
 		paused: false,
 		scenes: {},
+		log: [],
 	};
 	
 	// start describing a scene (this should be called before start())
@@ -2051,17 +2079,62 @@ debug utils
 		return game.scenes[game.curScene];
 	}
 	
+	// register inputs for controlling debug features
+	function regDebugInputs() {
+	
+		const dbg = kaboom.debug;
+	
+		keyPress("`", () => {
+			dbg.showLog = !dbg.showLog;
+			log(`show log: ${dbg.showLog ? "on" : "off"}`);
+		});
+	
+		keyPress("f1", () => {
+			dbg.showArea = !dbg.showArea;
+			log(`show area: ${dbg.showArea ? "on" : "off"}`);
+		});
+	
+		keyPress("f2", () => {
+			dbg.hoverInfo = !dbg.hoverInfo;
+			log(`hover info: ${dbg.hoverInfo ? "on" : "off"}`);
+		});
+	
+		keyPress("f8", () => {
+			dbg.paused = !dbg.paused;
+			log(`${dbg.paused ? "paused" : "unpaused"}`);
+		});
+	
+		keyPress("f7", () => {
+			dbg.timeScale = Math.clamp(dbg.timeScale - 0.2, 0, 2);
+			log(`time scale: ${dbg.timeScale.toFixed(1)}`);
+		});
+	
+		keyPress("f9", () => {
+			dbg.timeScale = Math.clamp(dbg.timeScale + 0.2, 0, 2);
+			log(`time scale: ${dbg.timeScale.toFixed(1)}`);
+		});
+	
+		keyPress("f10", () => {
+			stepFrame();
+			log(`stepped frame`);
+		});
+	
+	}
+	
 	// switch to a scene
 	function go(name, ...args) {
 		reload(name);
 		game.curScene = name;
 		const scene = game.scenes[name];
 		if (!scene) {
-			console.error(`scene not found: '${name}'`);
+			error(`scene not found: '${name}'`);
 			return;
 		}
 		if (!scene.initialized) {
 			scene.init(...args);
+			if (kaboom.conf.debug) {
+				regDebugInputs();
+			}
 			scene.initialized = true;
 		}
 	}
@@ -2069,7 +2142,7 @@ debug utils
 	// reload a scene, reset all objs to their init states
 	function reload(name) {
 		if (!game.scenes[name]) {
-			console.error(`scene not found: '${name}'`);
+			error(`scene not found: '${name}'`);
 			return;
 		}
 		scene(name, game.scenes[name].init);
@@ -2161,7 +2234,7 @@ debug utils
 				}
 	
 				if (type !== "object") {
-					console.error(`invalid comp type: ${type}`);
+					error(`invalid comp type: ${type}`);
 					return;
 				}
 	
@@ -2231,6 +2304,15 @@ debug utils
 						f(...args);
 					}
 				}
+				const scene = curScene();
+				const events = scene.events[event];
+				if (events) {
+					for (const ev of events) {
+						if (this.is(ev.tag)) {
+							ev.cb(this);
+						}
+					}
+				}
 			},
 	
 			addTag(t) {
@@ -2289,6 +2371,9 @@ debug utils
 	// add an event to a tag
 	function on(event, tag, cb) {
 		const scene = curScene();
+		if (!scene.events[event]) {
+			scene.events[event] = [];
+		}
 		scene.events[event].push({
 			tag: tag,
 			cb: cb,
@@ -2497,17 +2582,19 @@ debug utils
 		return scene.gravity;
 	}
 	
+	const LOG_TIME = 6;
+	
 	// TODO: cleaner pause logic
 	function gameFrame(ignorePause) {
 	
 		const scene = curScene();
 	
 		if (!scene) {
-			console.error(`scene not found: '${game.curScene}'`);
+			error(`scene not found: '${game.curScene}'`);
 			return;
 		}
 	
-		const doUpdate = ignorePause || !game.paused;
+		const doUpdate = ignorePause || !kaboom.debug.paused;
 	
 		if (doUpdate) {
 			// update timers
@@ -2527,13 +2614,14 @@ debug utils
 		revery((obj) => {
 			if (!obj.paused && doUpdate) {
 				obj.trigger("update");
-				for (const e of scene.events.update) {
-					if (obj.is(e.tag)) {
-						e.cb(obj);
-					}
-				}
 			}
 		});
+	
+		if (doUpdate) {
+			for (const f of scene.action) {
+				f();
+			}
+		}
 	
 		// calculate camera matrix
 		const size = vec2(width(), height());
@@ -2565,26 +2653,56 @@ debug utils
 	
 				obj.trigger("draw");
 	
-				for (const e of scene.events.draw) {
-					if (obj.is(e.tag)) {
-						e.cb(obj);
-					}
-				}
-	
 				popTransform();
 	
 			}
 	
 		});
 	
-		if (doUpdate) {
-			for (const f of scene.action) {
-				f();
-			}
-		}
-	
 		for (const f of scene.render) {
 			f();
+		}
+	
+		// TODO: make log and progress bar fixed size independent of global scale
+		// draw log
+		game.log = game.log.filter(l => l.timer < kaboom.debug.logTime);
+	
+		if (game.log.length > kaboom.debug.logMax) {
+			game.log = game.log.slice(0, kaboom.debug.logMax);
+		}
+	
+		const pos = vec2(0, height());
+	
+		if (kaboom.debug.showLog) {
+	
+			game.log.forEach((log, i) => {
+	
+				const col = (() => {
+					switch (log.type) {
+						case "log": return rgb(1, 1, 1);
+						case "error": return rgb(1, 0, 0.5);
+					}
+				})();
+	
+				const ftext = fmtText(log.msg, {
+					pos: pos,
+					origin: "botleft",
+					color: col,
+					z: 1,
+				});
+	
+				drawRect(pos, ftext.width, ftext.height, {
+					origin: "botleft",
+					color: rgba(0, 0, 0, 0.5),
+					z: 1,
+				});
+	
+				drawFmtText(ftext);
+				log.timer += dt();
+				pos.y -= ftext.height;
+	
+			});
+	
 		}
 	
 		gfxFrameEnd();
@@ -2602,8 +2720,13 @@ debug utils
 			const realDt = realTime - app.realTime;
 	
 			app.realTime = realTime;
-			app.dt = realDt * kaboom.debug.timeScale;
-			app.time += app.dt;
+	
+			if (!app.skipTime) {
+				app.dt = realDt * kaboom.debug.timeScale;
+				app.time += app.dt;
+			}
+	
+			app.skipTime = false;
 	
 			if (!game.loaded) {
 	
@@ -2636,7 +2759,7 @@ debug utils
 				const scene = curScene();
 	
 				if (!scene) {
-					console.error(`scene not found: '${game.curScene}'`);
+					error(`scene not found: '${game.curScene}'`);
 					return;
 				}
 	
@@ -3138,7 +3261,7 @@ debug utils
 		const spr = assets.sprites[id];
 	
 		if (!spr) {
-			console.error(`sprite not found: "${id}"`);
+			error(`sprite not found: "${id}"`);
 			return;
 		}
 	
@@ -3151,20 +3274,20 @@ debug utils
 			q.h *= conf.quad.h;
 		}
 	
-		const w = spr.tex.width * q.w;
-		const h = spr.tex.height * q.h;
+		const width = spr.tex.width * q.w;
+		const height = spr.tex.height * q.h;
 		let timer = 0;
 		let looping = false;
+		let curAnim = null;
 		const events = {};
 	
 		return {
 	
 			spriteID: id,
-			curAnim: undefined,
+			width: width,
+			height: height,
 			animSpeed: conf.animSpeed || 0.1,
 			frame: conf.frame || 0,
-			width: w,
-			height: h,
 			quad: conf.quad || quad(0, 0, 1, 1),
 	
 			add() {
@@ -3194,12 +3317,12 @@ debug utils
 	
 			update() {
 	
-				if (!this.curAnim) {
+				if (!curAnim) {
 					return;
 				}
 	
 				const speed = this.animSpeed;
-				const anim = spr.anims[this.curAnim];
+				const anim = spr.anims[curAnim];
 	
 				timer += dt();
 	
@@ -3224,15 +3347,15 @@ debug utils
 				const anim = assets.sprites[this.spriteID].anims[name];
 	
 				if (!anim) {
-					console.error(`anim not found: ${name}`);
+					error(`anim not found: ${name}`);
 					return;
 				}
 	
-				if (this.curAnim) {
+				if (curAnim) {
 					this.stop();
 				}
 	
-				this.curAnim = name;
+				curAnim = name;
 				this.frame = anim[0];
 				looping = loop === undefined ? true : loop;
 	
@@ -3243,13 +3366,17 @@ debug utils
 			},
 	
 			stop() {
-				if (!this.curAnim) {
+				if (!curAnim) {
 					return;
 				}
-				if (events[this.curAnim]?.end) {
-					events[this.curAnim].end();
+				if (events[curAnim]?.end) {
+					events[curAnim].end();
 				}
-				this.curAnim = undefined;
+				curAnim = null;
+			},
+	
+			curAnim() {
+				return curAnim;
 			},
 	
 			onAnimPlay(name, cb) {
@@ -3268,8 +3395,8 @@ debug utils
 	
 			debugInfo() {
 				const info = {};
-				if (this.curAnim) {
-					info.curAnim = `"${this.curAnim}"`;
+				if (curAnim) {
+					info.curAnim = `"${curAnim}"`;
 				}
 				return info;
 			},
@@ -3388,42 +3515,44 @@ debug utils
 	
 	function body(conf = {}) {
 	
+		let velY = 0;
+		let curPlatform = null;
+		const maxVel = conf.maxVel || DEF_MAX_VEL;
+	
 		return {
 	
-			velY: 0,
-			jumpForce: conf.jumpForce !== null ? conf.jumpForce : DEF_JUMP_FORCE,
-			maxVel: conf.maxVel || DEF_MAX_VEL,
-			curPlatform: null,
+			jumpForce: conf.jumpForce !== undefined ? conf.jumpForce : DEF_JUMP_FORCE,
 	
 			update() {
 	
-				this.move(0, this.velY);
+				this.move(0, velY);
 	
 				const targets = this.resolve();
 				let justOff = false;
 	
 				// check if loses current platform
-				if (this.curPlatform) {
-					if (!this.curPlatform.exists() || !this.isCollided(this.curPlatform)) {
-						this.curPlatform = null;
+				if (curPlatform) {
+					if (!curPlatform.exists() || !this.isCollided(curPlatform)) {
+						curPlatform = null;
 						justOff = true;
 					}
 				}
 	
-				if (!this.curPlatform) {
+				if (!curPlatform) {
 	
-					this.velY = Math.min(this.velY + gravity() * dt(), this.maxVel);
+					velY = Math.min(velY + gravity() * dt(), maxVel);
 	
 					// check if grounded to a new platform
 					for (const target of targets) {
-						if (target.side === "bottom" && this.velY > 0) {
-							this.curPlatform = target.obj;
+						if (target.side === "bottom" && velY > 0) {
+							curPlatform = target.obj;
+							velY = 0;
 							if (!justOff) {
-								this.trigger("grounded");
+								this.trigger("grounded", curPlatform);
 							}
-							this.velY = 0;
-						} else if (target.side === "top" && this.velY < 0) {
-							this.velY = 0;
+						} else if (target.side === "top" && velY < 0) {
+							velY = 0;
+							this.trigger("headbump", target.obj);
 						}
 					}
 	
@@ -3432,12 +3561,12 @@ debug utils
 			},
 	
 			grounded() {
-				return this.curPlatform !== null;
+				return curPlatform !== null;
 			},
 	
 			jump(force) {
-				this.curPlatform = null;
-				this.velY = -force || -this.jumpForce;
+				curPlatform = null;
+				velY = -force || -this.jumpForce;
 			},
 	
 		};
@@ -3472,24 +3601,26 @@ debug utils
 		return scene.objs.size;
 	}
 	
-	function pause(b) {
-		game.paused = b === undefined ? true : b;
-	}
-	
-	function paused() {
-		return game.paused;
-	}
-	
 	function stepFrame() {
 		gameFrame(true);
 	}
 	
 	function error(msg) {
 		console.error(msg);
+		game.log.unshift({
+			type: "error",
+			msg: msg,
+			timer: 0,
+		});
 	}
 	
 	function log(msg) {
 		console.log(msg);
+		game.log.unshift({
+			type: "log",
+			msg: msg,
+			timer: 0,
+		});
 	}
 	
 	/*
@@ -3737,9 +3868,9 @@ debug utils
 	// debug
 	kaboom.objCount = objCount;
 	kaboom.fps = fps;
-	kaboom.pause = pause;
-	kaboom.paused = paused;
 	kaboom.stepFrame = stepFrame;
+	kaboom.log = log;
+	kaboom.error = error;
 	
 	// level
 	kaboom.addLevel = addLevel;
