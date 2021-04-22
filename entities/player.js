@@ -37,53 +37,59 @@ export function playerControls() {
   keyDown('left', () => {
     player.move(-PLAYER_SPEED, 0);
   });
+  keyDown('right', () => {
+      player.move(PLAYER_SPEED, 0);
+  });
+  keyDown('up', () => {
+      player.move(0, -PLAYER_SPEED);
+  });
+  keyDown('down', () => {
+      player.move(0, PLAYER_SPEED);
+  });
 
   keyPress('left', () => {
     player.play('walkLeft');
+    player.isAnimated = 'left';
+  });
+  keyPress('right', () => {
+    player.play('walkRight');
+    player.isAnimated = 'right';
+  });
+  keyPress('up', () => {
+    player.play('walkUp');
+    player.isAnimated = 'up';
+  });
+  keyPress('down', () => {
+    player.play('walkDown');
+    player.isAnimated = 'down';
   });
 
   keyRelease('left', () => {
-    player.stop();
-    player.frame = 6;
-  });
-
-  keyDown('right', () => {
-    player.move(PLAYER_SPEED, 0);
-  });
-
-  keyPress('right', () => {
-    player.play('walkRight');
+    if(player.isAnimated === 'left'){
+      player.stop();
+      player.frame = 6;
+    }
   });
 
   keyRelease('right', () => {
-    player.stop();
-    player.frame = 9;
-  });
-
-  keyDown('up', () => {
-    player.move(0, -PLAYER_SPEED);
-  });
-
-  keyPress('up', () => {
-    player.play('walkUp');
+    if(player.isAnimated === 'right'){
+      player.stop();
+      player.frame = 9;
+    }
   });
 
   keyRelease('up', () => {
-    player.stop();
-    player.frame = 3;
-  });
-
-  keyDown('down', () => {
-    player.move(0, PLAYER_SPEED);
-  });
-
-  keyPress('down', () => {
-    player.play('walkDown');
+    if(player.isAnimated === 'up'){
+      player.stop();
+      player.frame = 3;
+    }
   });
 
   keyRelease('down', () => {
-    player.stop();
-    player.frame = 0;
+    if(player.isAnimated === 'down'){
+      player.stop();
+      player.frame = 0;
+    }
   });
 }
 
