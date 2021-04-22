@@ -29,10 +29,10 @@ loadSprite('character', '/assets/wizard.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    walkDown: [0,2],
-    walkLeft: [6,8],
-    walkRight: [9,11],
-    walkUp: [3,5]
+    walkDown: [1,2],
+    walkLeft: [7,8],
+    walkRight: [10,11],
+    walkUp: [4,5]
   }
 });
 
