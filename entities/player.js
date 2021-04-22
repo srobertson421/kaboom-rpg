@@ -4,6 +4,7 @@ import {
   keyPress,
   keyRelease,
   add,
+  readd,
   sprite,
   pos,
   overlaps,
@@ -18,6 +19,7 @@ import {
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
 import SCALE from '../state/scale.js';
+import levels from '../levels.js';
 
 const PLAYER_SPEED = 75;
 
@@ -96,42 +98,163 @@ export function playerCollisions() {
   });
 }
 
+
 const levelWidth = 480 * (SCALE.value * 2);
 const levelHeight = 304 * (SCALE.value * 2);
-
 const widthRatio = 480 / levelWidth; 
 const heightRatio = 304 / levelHeight; 
-
 const screenRightWidthOffset = 480 - (window.innerWidth / 2) * widthRatio;
 const screenLeftWidthOffset = (window.innerWidth / 2) * widthRatio;
 const screenBottomHeightOffset = 304 - (window.innerHeight / 2) * heightRatio;
 const screenTopHeightOffset = (window.innerHeight / 2) * heightRatio;
 
+function checkCurrentLevel(player) {
+
+  let levelTop = false;
+  let levelRight = false;
+  let levelBottom = false;
+  let levelLeft = false;
+  let topString,
+  bottomString,
+  leftString,
+  rightString
+
+  topString = `${parseInt(currentLevel.value.split('')[0]) - 1}${currentLevel.value.split('')[1]}`;
+  bottomString = `${parseInt(currentLevel.value.split('')[0]) + 1}${currentLevel.value.split('')[1]}`;
+  leftString = `${currentLevel.value.split('')[0]}${parseInt(currentLevel.value.split('')[1]) - 1}`;
+  rightString = `${currentLevel.value.split('')[0]}${parseInt(currentLevel.value.split('')[1]) + 1}`;
+
+  if(currentLevel.value == '00'){
+    // if we are on the first level
+    levelTop = false;
+    levelLeft = false;
+
+    if(levels['10']){
+      levelBottom = true;
+    }
+
+    if(levels['01']){
+      levelRight = true;
+    }
+
+  } else {
+    // else check if there are levels on the sides of our current level
+    // check top
+    if(parseInt(currentLevel.value.split('')[0]) === 0){
+      //if our first number in our level id is a 0 then we know there is no level above;
+      levelTop = false;
+
+    } else {
+      // we build a string by decrementing the first value and check if it exists in our levels
+      if(levels[topString]){
+        levelTop = true;
+      }
+    }
+
+    // check left 
+    if(parseInt(currentLevel.value.split('')[1]) === 0){
+
+      //if our second number in our level id is a 0 then we know there is no level above;
+      levelLeft = false;
+
+    } else {
+      // we build a string by decrementing the second value and check if it exists in our levels
+      if(levels[leftString]){
+        levelLeft = true;
+      }
+
+    }
+
+    // check right
+    if(levels[rightString]){
+      levelRight = true;
+    }
+
+    // check bottom
+    if(levels[bottomString]){
+      levelBottom = true;
+    }
+    
+  }
+
+  if(player.pos.x > 480) {
+
+    // check if player can walk right
+    if(levelRight){
+
+      playerPos.value = vec2(-9, player.pos.y);
+
+      currentLevel.value = rightString;
+      go('overworld');
+
+    } else {
+
+      playerPos.value = vec2(480, player.pos.y);
+
+      player.pos.x = 480;
+    }
+
+  } else if(player.pos.x < -10) {
+
+    // check if player can walk left
+    if(levelLeft){
+
+      playerPos.value = vec2(480, player.pos.y);
+
+      currentLevel.value = leftString;
+      go('overworld');
+
+    } else {
+
+      playerPos.value = vec2(0, player.pos.y);
+      console.log('player position: ', player);
+      player.pos.x = 0;
+    }
+
+  } else if(player.pos.y > 304){
+
+    // check if player can walk left
+    if(levelBottom){
+
+      playerPos.value = vec2(player.pos.x, -9);
+
+      currentLevel.value = bottomString;
+      go('overworld');
+
+    } else {
+
+      playerPos.value = vec2(player.pos.x, 304);
+
+      player.pos.y = 304;
+    }
+
+  } else if(player.pos.y < -10){
+
+    // check if player can walk left
+    if(levelTop){
+
+      playerPos.value = vec2(player.pos.x, 304);
+      currentLevel.value = topString;
+      go('overworld');
+
+    } else {
+
+      playerPos.value = vec2(player.pos.x, 0);
+      
+      player.pos.y = 0;
+    }
+
+  }
+
+
+}
+
+
 export function playerActions() {
   action('player', player => {
     playerPos.value = player.pos;
 
-    if(player.pos.x > 500) {
-      playerPos.value = vec2(-9, player.pos.y);
-
-      if(currentLevel.value === '00') {
-        currentLevel.value = '01';
-        go('overworld');
-      } else if(currentLevel.value === '01') {
-        currentLevel.value = '02';
-        go('overworld');
-      }
-    } else if(player.pos.x < -10) {
-      playerPos.value = vec2(500, player.pos.y);
-
-      if(currentLevel.value === '02') {
-        currentLevel.value = '01';
-        go('overworld');
-      } else if(currentLevel.value === '01') {
-        currentLevel.value = '00';
-        go('overworld');
-      }
-    }
+    checkCurrentLevel(player);
 
     camPos(player.pos);  
 

@@ -3,6 +3,7 @@ const engine = kaboom;
 export const init = engine.init;
 export const scene = engine.scene;
 export const add = engine.add;
+export const readd = engine.readd;
 export const text = engine.text;
 export const pos = engine.pos;
 export const start = engine.start;
