@@ -36,6 +36,25 @@ loadSprite('character', '/assets/wizard.png', {
   }
 });
 
+loadSprite('fire', '/assets/camp_fire.png', {
+  sliceX: 3,
+  sliceY: 3,
+  anims: {
+    burn: [0,6]
+  }
+});
+
+loadSprite('mentor', '/assets/old_wizard.png', {
+  sliceX: 3,
+  sliceY: 4,
+  anims: {
+    walkDown: [1,2],
+    walkLeft: [7,8],
+    walkRight: [10,11],
+    walkUp: [4,5]
+  }
+});
+
 loadSound('overworldSound', '/assets/overworld.ogg');
 
 init({
