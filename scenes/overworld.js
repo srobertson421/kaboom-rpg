@@ -13,10 +13,10 @@ import SCALE from '../state/scale.js'
 import {
   addPlayer,
   playerActions,
-  playerCollisions,
-  playerControls
+  playerCollisions
 } from '../entities/player.js';
 import createCurrentLevel from '../utils/createCurrentLevel.js';
+import playerControls from '../utils/playerControls.js';
 
 
 function addFire() {

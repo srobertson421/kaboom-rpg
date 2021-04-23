@@ -21,76 +21,12 @@ import currentLevel from '../state/currentLevel.js';
 import SCALE from '../state/scale.js';
 import levels from '../levels.js';
 
-const PLAYER_SPEED = 75;
-
 export function addPlayer() {
   return add([
     sprite('character', { animSpeed: 0.25 }),
     pos(playerPos.value.x, playerPos.value.y),
     'player'
   ]);
-}
-
-export function playerControls() {
-  const player = get('player')[0];
-
-  keyDown('left', () => {
-    player.move(-PLAYER_SPEED, 0);
-  });
-  keyDown('right', () => {
-      player.move(PLAYER_SPEED, 0);
-  });
-  keyDown('up', () => {
-      player.move(0, -PLAYER_SPEED);
-  });
-  keyDown('down', () => {
-      player.move(0, PLAYER_SPEED);
-  });
-
-  keyPress('left', () => {
-    player.play('walkLeft');
-    player.isAnimated = 'left';
-  });
-  keyPress('right', () => {
-    player.play('walkRight');
-    player.isAnimated = 'right';
-  });
-  keyPress('up', () => {
-    player.play('walkUp');
-    player.isAnimated = 'up';
-  });
-  keyPress('down', () => {
-    player.play('walkDown');
-    player.isAnimated = 'down';
-  });
-
-  keyRelease('left', () => {
-    if(player.isAnimated === 'left'){
-      player.stop();
-      player.frame = 6;
-    }
-  });
-
-  keyRelease('right', () => {
-    if(player.isAnimated === 'right'){
-      player.stop();
-      player.frame = 9;
-    }
-  });
-
-  keyRelease('up', () => {
-    if(player.isAnimated === 'up'){
-      player.stop();
-      player.frame = 3;
-    }
-  });
-
-  keyRelease('down', () => {
-    if(player.isAnimated === 'down'){
-      player.stop();
-      player.frame = 0;
-    }
-  });
 }
 
 export function playerCollisions() {
