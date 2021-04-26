@@ -49,8 +49,8 @@ loadSprite('mentor', '/assets/old_wizard.png', {
   sliceY: 4,
   anims: {
     walkDown: [1,2],
-    walkLeft: [7,8],
-    walkRight: [10,11],
+    walkRight: [7,8],
+    walkLeft: [10,11],
     walkUp: [4,5]
   }
 });
