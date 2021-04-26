@@ -10,6 +10,12 @@ import {
 import { overworldMusic } from '../state/music.js';
 import SCALE from '../state/scale.js'
 
+
+import {
+  addMentor,
+  mentorActions
+} from '../entities/mentor.js';
+
 import {
   addPlayer,
   playerActions,
@@ -27,13 +33,7 @@ function addFire() {
   ]);
 }
 
-function addMentor(){
-  return add([
-    sprite('mentor', {animSpeed: 0.25}),
-    pos(230, 100),
-    'mentor'
-  ])
-}
+
 
 const overworldScene = () => {
   return scene('overworld', () => {
@@ -61,65 +61,10 @@ const overworldScene = () => {
 
     playerActions();
 
+    mentorActions();
+
     const fire = get('fire')[0];
     fire.play('burn');
-
-    var mentor = get('mentor')[0];
-    const MENTOR_SPEED = 75;
-
-    function mentorStop(){
-      mentor.stop();
-      if(mentor.direction === 'down'){
-        mentor.frame = 0;
-      } else {
-        mentor.frame = 3;
-      }
-
-      
-    }
-
-    function walkDown(){
-      mentor.move(0, MENTOR_SPEED);
-      mentor.play('walkDown');
-    }
-
-    function walkUp(){
-      mentor.move(0, -MENTOR_SPEED);
-      mentor.play('walkUp');
-    }
-
-    function mentorWalk(){
-
-      clearInterval(walkDown);
-      clearInterval(walkUp);
-
-      if(mentor.direction){
-
-        if(mentor.direction === 'down'){
-
-          mentor.direction = 'up';
-          setInterval(walkUp, 100);
-          
-
-        } else {
-          mentor.direction = 'down';
-          setInterval(walkDown, 100);
-        }
-
-      } else {
-
-        mentor.direction = 'down';
-        setInterval(walkDown, 100);
-
-      }
-
-      setTimeout(mentorStop, 1500);
-
-    }
-
-    // setInterval(function(){
-    //   mentorWalk();
-    // }, 2000)
 
     // there's no spatial hashing yet, if too many blocks causing lag, consider hard disabling collision resolution from blocks far away by turning off 'solid'
     // action("flower", (b) => {
