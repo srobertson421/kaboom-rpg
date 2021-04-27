@@ -93,12 +93,30 @@ loadSprite('dog', '/assets/dog_wizard.png', {
   }
 });
 
+loadSprite('player-battle', '/assets/spell_cast.png', {
+  sliceX: 4,
+  sliceY: 5,
+  anims: {
+    cast: [0,15]
+  }
+});
+
+loadSprite('plasma', '/assets/plasma_canon.png', {
+  sliceX: 4,
+  sliceY: 4,
+  anims: {
+    fire: [0,12]
+  }
+});
+
+loadSprite('rat', '/assets/rat.png');
+
 loadSound('overworldSound', '/assets/overworld.ogg');
 
 overworldScene();
 battleScene();
 
-start('overworld');
+start('battle');
 
 
 
