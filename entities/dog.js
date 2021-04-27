@@ -91,9 +91,6 @@ function moveToPathPoint(dog){
 }
 
 function setDogAnimation(dog){
-
-  console.log('dog direction: ', dog.direction);
-
   if(dog.direction === 'down'){
     walkDown(dog);
   } else if(dog.direction === 'up') {

@@ -5,7 +5,8 @@ import {
   add,
   sprite,
   pos,
-  get
+  get,
+  play
 } from '../engine.js';
 import { overworldMusic } from '../state/music.js';
 import SCALE from '../state/scale.js'
@@ -41,6 +42,7 @@ function addFire() {
 
 
 const overworldScene = () => {
+
   return scene('overworld', () => {
     gravity(0);
 
