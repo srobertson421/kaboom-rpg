@@ -17,9 +17,15 @@ import {
 } from '../entities/mentor.js';
 
 import {
+  addDog,
+  dogActions
+} from '../entities/dog.js';
+
+import {
   addPlayer,
   playerActions,
-  playerCollisions
+  playerCollisions,
+  playerOverlaps
 } from '../entities/player.js';
 import createCurrentLevel from '../utils/createCurrentLevel.js';
 import playerControls from '../utils/playerControls.js';
@@ -32,7 +38,6 @@ function addFire() {
     'fire'
   ]);
 }
-
 
 
 const overworldScene = () => {
@@ -51,17 +56,23 @@ const overworldScene = () => {
 
     addFire();
   
+    addDog();
+
     addMentor();
 
     addPlayer();
-  
+
     playerControls();
 
     playerCollisions();
 
+    playerOverlaps();
+
     playerActions();
 
     mentorActions();
+
+    dogActions();
 
     const fire = get('fire')[0];
     fire.play('burn');

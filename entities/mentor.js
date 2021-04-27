@@ -16,7 +16,8 @@ import {
   width,
   height,
   loop,
-  wait
+  wait,
+  solid
 } from '../engine.js';
 
 const MENTOR_SPEED = 10;
@@ -138,6 +139,7 @@ export function addMentor() {
     sprite('mentor', {animSpeed: 0.25}),
     pos(230, 0),
     'mentor',
+    'pausable',
     {
       reverse: false,
       stopped: false,
@@ -151,7 +153,7 @@ export function addMentor() {
 
 export function mentorActions(){
   action('mentor', mentor => {
-
+    mentor.resolve();
     if(!mentor.checking){
       moveToPathPoint(mentor);
     }
