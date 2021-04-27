@@ -1,6 +1,5 @@
 import {
   start,
-  init,
   loadSprite,
   loadSound
 } from './engine.js';
@@ -56,12 +55,6 @@ loadSprite('mentor', '/assets/old_wizard.png', {
 });
 
 loadSound('overworldSound', '/assets/overworld.ogg');
-
-init({
-  // canvas: document.getElementById('game'),
-  fullscreen: true,
-	scale: 2
-});
 
 overworldScene();
 battleScene();

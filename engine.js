@@ -1,4 +1,7 @@
-const engine = kaboom;
+const engine = kaboom({
+  fullscreen: true,
+	scale: 2
+});
 
 export const init = engine.init;
 export const scene = engine.scene;
