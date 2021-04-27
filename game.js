@@ -1,6 +1,5 @@
 import {
   start,
-  init,
   loadSprite,
   loadSound
 } from './engine.js';
@@ -95,12 +94,6 @@ loadSprite('dog', '/assets/dog_wizard.png', {
 });
 
 loadSound('overworldSound', '/assets/overworld.ogg');
-
-init({
-  // canvas: document.getElementById('game'),
-  fullscreen: true,
-	scale: 2
-});
 
 overworldScene();
 battleScene();

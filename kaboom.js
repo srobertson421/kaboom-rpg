@@ -1,7 +1,7 @@
 /*
 
 kaboom.js
-v0.3.0
+v0.4.1 "Multiboom"
 
 a JavaScript game programming library
 
@@ -75,20 +75,8 @@ debug utils
 
 */
 
-(() => {
+window.kaboom = (gconf = {}) => {
 
-	const kaboom = {};
-	
-	kaboom.debug = {
-		paused: false,
-		timeScale: 1,
-		showArea: false,
-		hoverInfo: false,
-		showLog: false,
-		logTime: 6,
-		logMax: 32,
-	};
-	
 	/*
 	
 	*11111111*
@@ -108,8 +96,9 @@ debug utils
 	
 	*/
 	
-	const DEF_FONT = "unscii";
 	const ASCII_CHARS = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+	const DEF_FONT = "unscii";
+	const UNSCII_SRC = "data:image/png;base64,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";
 	
 	const assets = {
 		lastLoaderID: 0,
@@ -120,17 +109,36 @@ debug utils
 		fonts: {},
 	};
 	
-	function assetsInit(conf = {}) {
+	function assetsInit() {
 		// default font unscii http://pelulamu.net/unscii/
 		loadFont(
 			DEF_FONT,
-			"data:image/png;base64,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",
+			UNSCII_SRC,
 			8,
 			8
 		);
 	}
 	
+	function loadImg(src) {
+	
+		const img = new Image();
+	
+		img.crossOrigin = "";
+		img.src = src;
+	
+		return new Promise((resolve, reject) => {
+			img.onload = () => {
+				resolve(img);
+			};
+			img.onerror = () => {
+				reject();
+			};
+		});
+	
+	}
+	
 	// make a new load tracker
+	// the game starts after all trackers are done()
 	function newLoader() {
 		const id = assets.lastLoaderID;
 		assets.loaders[id] = false;
@@ -161,7 +169,14 @@ debug utils
 	
 	// global load path prefix
 	function loadRoot(path) {
-		assets.loadRoot = path;
+		if (path) {
+			assets.loadRoot = path;
+		}
+		return assets.loadRoot;
+	}
+	
+	function isDataUrl(src) {
+		return src.startsWith("data:");
 	}
 	
 	// load a bitmap font to asset manager
@@ -170,13 +185,20 @@ debug utils
 		return new Promise((resolve, reject) => {
 	
 			const loader = newLoader();
+			const path = isDataUrl(src) ? src : assets.loadRoot + src;
 	
-			loadImg(src, (img) => {
-				const font = makeFont(makeTex(img), gw, gh, chars || ASCII_CHARS);
-				loader.done();
-				assets.fonts[name] = font;
-				resolve(font);
-			});
+			loadImg(path)
+				.then((img) => {
+					assets.fonts[name] = makeFont(makeTex(img), gw, gh, chars || ASCII_CHARS);
+					resolve(assets.fonts[name]);
+				})
+				.catch(() => {
+					error(`failed to load font '${name}' from '${src}'`);
+					reject();
+				})
+				.finally(() => {
+					loader.done();
+				});
 	
 		});
 	
@@ -189,8 +211,6 @@ debug utils
 		// sliceX: num,
 		// sliceY: num,
 		// anims: { name: [num, num] }
-	
-		const curRoot = assets.loadRoot;
 	
 		// synchronously load sprite from local pixel data
 		//
@@ -236,65 +256,20 @@ debug utils
 			// from url
 			if (typeof(src) === "string") {
 	
-				// from replit kaboom workspace sprite editor
-				if (src.match(/\.kbmsprite$/)) {
+				const loader = newLoader();
+				const path = isDataUrl(src) ? src : assets.loadRoot + src;
 	
-					const loader = newLoader();
-	
-					fetch(curRoot + src)
-						.then((res) => {
-							return res.json();
-						})
-						.then((data) => {
-	
-							const frames = data.frames;
-	
-							const pixels = frames
-								.map(f => f.pixels)
-								.flat()
-								;
-	
-							const w = frames[0].width;
-							const h = frames[0].height;
-	
-							const img = new ImageData(
-								new Uint8ClampedArray(pixels),
-								w,
-								h * frames.length,
-							);
-	
-							const sprite = loadRawSprite(name, img, {
-								sliceY: frames.length,
-								anims: conf.anims,
-							});
-	
-							loader.done();
-							resolve(sprite);
-	
-						})
-						.catch(() => {
-							error(`failed to load sprite '${name}' from '${src}'`);
-						})
-						;
-	
-				// any other url
-				} else {
-	
-					const loader = newLoader();
-					const img = loadImg(curRoot + src);
-	
-					img.onload = () => {
-						const sprite = loadRawSprite(name, img, conf);
-						loader.done();
-						resolve(sprite);
-					};
-	
-					img.onerror = () => {
+				loadImg(path)
+					.then((img) => {
+						resolve(loadRawSprite(name, img, conf));
+					})
+					.catch(() => {
 						error(`failed to load sprite '${name}' from '${src}'`);
+						reject();
+					})
+					.finally(() => {
 						loader.done();
-					};
-	
-				}
+					});
 	
 				return;
 	
@@ -308,110 +283,8 @@ debug utils
 	
 	}
 	
-	function loadAseprite(name, imgSrc, jsonSrc) {
-	
-		const curRoot = assets.loadRoot;
-	
-		return loadSprite(name, imgSrc).then(() => {
-	
-			const loader = newLoader();
-	
-			fetch(curRoot + jsonSrc)
-				.then((res) => {
-					return res.json();
-				})
-				.then((data) => {
-					const size = data.meta.size;
-					assets.sprites[name].frames = data.frames.map((f) => {
-						return quad(
-							f.frame.x / size.w,
-							f.frame.y / size.h,
-							f.frame.w / size.w,
-							f.frame.h / size.h,
-						);
-					});
-					for (const anim of data.meta.frameTags) {
-						assets.sprites[name].anims[anim.name] = [anim.from, anim.to];
-					}
-					loader.done();
-				});
-	
-		});
-	
-	}
-	
-	// TODO: finalize interface
-	// get sprite asset settings
-	function getSprite(name) {
-		const sprite = assets.sprites[name];
-		if (!sprite) {
-			error(`sprite not found: '${name}'`);
-		}
-		return {
-	
-			width() {
-				return sprite.tex.width;
-			},
-	
-			height() {
-				return sprite.tex.height;
-			},
-	
-			addAnim(name, range) {
-				sprite.anims[name] = range;
-			},
-	
-			useAseSpriteSheet(path) {
-				return fetch(assets.loadRoot + path)
-					.then((res) => {
-						return res.json();
-					})
-					.then((data) => {
-						const size = data.meta.size;
-						sprite.frames = data.frames.map((f) => {
-							return quad(
-								f.frame.x / size.w,
-								f.frame.y / size.h,
-								f.frame.w / size.w,
-								f.frame.h / size.h,
-							);
-						});
-						for (const anim of data.meta.frameTags) {
-							sprite.anims[anim.name] = [anim.from, anim.to];
-						}
-					});
-			},
-	
-			slice(x, y) {
-	
-				x = x || 1;
-				y = y || 1;
-				const qw = 1 / x;
-				const qh = 1 / y;
-	
-				sprite.frames = [];
-	
-				for (let j = 0; j < y; j++) {
-					for (let i = 0; i < x; i++) {
-						sprite.frames.push(quad(
-							i * qw,
-							j * qh,
-							qw,
-							qh,
-						));
-					}
-				}
-	
-			},
-	
-		};
-	
-	}
-	
 	// load a sound to asset manager
 	function loadSound(name, src, conf = {}) {
-	
-		const curRoot = assets.loadRoot;
 	
 		return new Promise((resolve, reject) => {
 	
@@ -420,26 +293,29 @@ debug utils
 	
 				const loader = newLoader();
 	
-				fetch(curRoot + src)
+				fetch(assets.loadRoot + src)
 					.then((res) => {
 						return res.arrayBuffer();
 					})
 					.then((data) => {
-						// TODO: doesn't work on safari
-						audio.ctx.decodeAudioData(data, (buf) => {
-							loader.done();
-							audio.sounds[name] = buf;
-							resolve(buf);
-						}, (err) => {
-							error(`failed to decode audio: ${name}`);
-							loader.done();
+						return new Promise((resolve2, reject2) => {
+							audio.ctx.decodeAudioData(data, (buf) => {
+								resolve2(buf);
+							}, (err) => {
+								reject2();
+							});
 						});
 					})
-					.catch((err) => {
-						error(`failed to load sound '${name}' from '${src}'`);
-						loader.done();
+					.then((buf) => {
+						audio.sounds[name] = buf;
 					})
-					;
+					.catch(() => {
+						error(`failed to load sound '${name}' from '${src}'`);
+						reject();
+					})
+					.finally(() => {
+						loader.done();
+					});
 	
 			}
 	
@@ -477,6 +353,7 @@ debug utils
 		skipTime: false,
 		dt: 0.0,
 		scale: 1,
+		isTouch: false,
 	};
 	
 	const keyMap = {
@@ -493,76 +370,98 @@ debug utils
 		"right",
 		"up",
 		"down",
+		"tab",
+		"f1",
+		"f2",
+		"f3",
+		"f4",
+		"f5",
+		"f6",
 		"f7",
 		"f8",
+		"f9",
+		"f10",
+		"f11",
 	];
 	
-	// TODO: make this not global?
 	let gl;
 	
-	// TODO: separate lower-level appInit() and exposed init()
-	function init(conf = {}) {
+	function appInit() {
+		app.canvas = gconf.canvas;
 	
-		let canvas = conf.canvas;
-	
-		kaboom.conf = conf;
-	
-		if (!canvas) {
-			canvas = document.createElement("canvas");
-			const root = conf.root || document.body;
-			root.appendChild(canvas);
+		if (!app.canvas) {
+			app.canvas = document.createElement("canvas");
+			const root = gconf.root || document.body;
+			root.appendChild(app.canvas);
 		}
 	
-		const scale = conf.scale || 1;
+		app.scale = gconf.scale || 1;
 	
-		if (conf.fullscreen) {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
+		if (gconf.fullscreen) {
+			app.canvas.width = window.innerWidth;
+			app.canvas.height = window.innerHeight;
 		} else {
-			canvas.width = (conf.width || 640) * scale;
-			canvas.height = (conf.height || 480) * scale;
+			app.canvas.width = (gconf.width || 640) * app.scale;
+			app.canvas.height = (gconf.height || 480) * app.scale;
 		}
 	
 		const styles = [
 			"outline: none",
 		];
 	
-		if (conf.crisp) {
+		if (gconf.crisp) {
 			styles.push("image-rendering: pixelated");
 			styles.push("image-rendering: crisp-edges");
 		}
 	
-		canvas.style = styles.join(";");
-		canvas.setAttribute("tabindex", "0");
+		app.canvas.style = styles.join(";");
+		app.canvas.setAttribute("tabindex", "0");
 	
-		app.scale = conf.scale || 1;
-	
-		gl = canvas
+		gl = app.canvas
 			.getContext("webgl", {
 				antialias: true,
 				depth: true,
 				stencil: true,
 				alpha: true,
+				preserveDrawingBuffer: true,
 			});
 	
-		gfxInit(conf);
-		audioInit(conf);
-		assetsInit(conf);
+		gfxInit();
+		audioInit();
+		assetsInit();
 	
-		canvas.addEventListener("mousemove", (e) => {
+		app.isTouch = ("ontouchstart" in window) ||
+			(navigator.maxTouchPoints > 0) ||
+			(navigator.msMaxTouchPoints > 0);
+	
+		app.canvas.addEventListener("contextmenu", (e) => {
+			e.preventDefault();
+		});
+	
+		app.canvas.addEventListener("mousemove", (e) => {
 			app.mousePos = vec2(e.offsetX, e.offsetY).scale(1 / app.scale);
 		});
 	
-		canvas.addEventListener("mousedown", (e) => {
+		app.canvas.addEventListener("mousedown", (e) => {
 			app.mouseState = "pressed";
 		});
 	
-		// TODO: on mobile this is fired at the same frame as "mousedown" which cancels out
-		canvas.addEventListener("mouseup", (e) => {
+		app.canvas.addEventListener("mouseup", (e) => {
 			app.mouseState = "released";
 		});
 	
-		canvas.addEventListener("keydown", (e) => {
+		app.canvas.addEventListener("touchstart", (e) => {
+			const t = e.touches[0];
+			app.mousePos = vec2(t.clientX, t.clientY).scale(1 / app.scale);
+			app.mouseState = "pressed";
+		});
+	
+		app.canvas.addEventListener("touchmove", (e) => {
+			const t = e.touches[0];
+			app.mousePos = vec2(t.clientX, t.clientY).scale(1 / app.scale);
+		});
+	
+		app.canvas.addEventListener("keydown", (e) => {
 	
 			const k = keyMap[e.key] || e.key.toLowerCase();
 	
@@ -586,12 +485,12 @@ debug utils
 	
 		});
 	
-		canvas.addEventListener("keyup", (e) => {
+		app.canvas.addEventListener("keyup", (e) => {
 			const k = keyMap[e.key] || e.key.toLowerCase();
 			app.keyStates[k] = "released";
 		});
 	
-		canvas.focus();
+		app.canvas.focus();
 	
 		document.addEventListener("visibilitychange", (e) => {
 			switch (document.visibilityState) {
@@ -606,8 +505,8 @@ debug utils
 			}
 		});
 	
-		if (conf.debug) {
-			kaboom.debug.showLog = true;
+		if (gconf.debug) {
+			debug.showLog = true;
 		}
 	
 	}
@@ -617,7 +516,7 @@ debug utils
 			return "down";
 		}
 		if (s === "released") {
-			return "idle";
+			return "up";
 		}
 		return s;
 	}
@@ -679,6 +578,11 @@ debug utils
 		return app.time;
 	}
 	
+	// get a base64 png image of canvas
+	function screenshot() {
+		return app.canvas.toDataURL();
+	}
+	
 	/*
 	
 	*33333*
@@ -733,31 +637,21 @@ debug utils
 		transformStack: [],
 	};
 	
-	function gfxInit(conf = {}) {
+	function gfxInit() {
 	
 		gfx.mesh = makeBatchedMesh(65536, 65536);
 		gfx.prog = makeProgram(defVertSrc, defFragSrc);
 		gfx.defTex = makeTex(
 			new ImageData(new Uint8ClampedArray([ 255, 255, 255, 255, ]), 1, 1)
 		);
-		const c = conf.clearColor || rgb(0, 0, 0);
-		gl.clearColor(c.r, c.g, c.b, c.a);
+		const c = gconf.clearColor || [0, 0, 0, 1];
+		gl.clearColor(c[0], c[1], c[2], c[3]);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		gl.enable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
 		gl.depthFunc(gl.LEQUAL);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	
-	}
-	
-	function loadImg(src, f) {
-		const img = new Image();
-		img.crossOrigin = "";
-		img.src = src;
-		if (f) {
-			img.onload = f.bind(null, img);
-		}
-		return img;
 	}
 	
 	// draw all cached vertices in the batched renderer
@@ -1603,6 +1497,9 @@ debug utils
 			eq(other) {
 				return this.x === other.x && this.y === other.y;
 			},
+			str() {
+				return `(${this.x}, ${this.y})`
+			},
 		};
 	}
 	
@@ -1963,16 +1860,12 @@ debug utils
 		return defRNG.gen(a, b);
 	}
 	
-	function randl(list) {
-		return list[Math.floor(Math.random() * list.length)];
-	}
-	
 	function chance(p) {
 		return rand(0, 1) <= p;
 	}
 	
 	function choose(list) {
-		return list[Math.floor(rand(0, list.length))];
+		return list[Math.floor(rand(list.length))];
 	}
 	
 	function deepCopy(input) {
@@ -2010,7 +1903,6 @@ debug utils
 	
 	*/
 	
-	// TODO: custom scene store
 	// TODO: comp registry?
 	// TODO: avoid comp fields direct assign / collision
 	// TODO: in-source doc on the component system
@@ -2059,17 +1951,22 @@ debug utils
 			timers: {},
 			lastTimerID: 0,
 	
-			// misc
-			layers: {},
+			// cam
 			cam: {
 				pos: vec2(width() / 2, height() / 2),
 				scale: vec2(1, 1),
 				angle: 0,
 				shake: 0,
 				ignore: [],
+				mpos: vec2(0),
 			},
-			gravity: DEF_GRAVITY,
+	
 			camMousePos: vec2(0),
+	
+			// misc
+			layers: {},
+			gravity: DEF_GRAVITY,
+			data: {},
 	
 		};
 	
@@ -2079,10 +1976,15 @@ debug utils
 		return game.scenes[game.curScene];
 	}
 	
+	// custom data kv store for scene
+	function sceneData() {
+		return curScene().data;
+	}
+	
 	// register inputs for controlling debug features
 	function regDebugInputs() {
 	
-		const dbg = kaboom.debug;
+		const dbg = debug;
 	
 		keyPress("`", () => {
 			dbg.showLog = !dbg.showLog;
@@ -2132,7 +2034,7 @@ debug utils
 		}
 		if (!scene.initialized) {
 			scene.init(...args);
-			if (kaboom.conf.debug) {
+			if (gconf.debug) {
 				regDebugInputs();
 			}
 			scene.initialized = true;
@@ -2554,13 +2456,6 @@ debug utils
 		}
 	
 		obj.trigger("destroy");
-	
-		for (const e of scene.events.destroy) {
-			if (obj.is(e.tag)) {
-				e.cb(obj);
-			}
-		}
-	
 		scene.objs.delete(obj._sceneID);
 		delete obj._sceneID;
 	
@@ -2594,7 +2489,7 @@ debug utils
 			return;
 		}
 	
-		const doUpdate = ignorePause || !kaboom.debug.paused;
+		const doUpdate = ignorePause || !debug.paused;
 	
 		if (doUpdate) {
 			// update timers
@@ -2665,15 +2560,15 @@ debug utils
 	
 		// TODO: make log and progress bar fixed size independent of global scale
 		// draw log
-		game.log = game.log.filter(l => l.timer < kaboom.debug.logTime);
+		game.log = game.log.filter(l => l.timer < debug.logTime);
 	
-		if (game.log.length > kaboom.debug.logMax) {
-			game.log = game.log.slice(0, kaboom.debug.logMax);
+		if (game.log.length > debug.logMax) {
+			game.log = game.log.slice(0, debug.logMax);
 		}
 	
 		const pos = vec2(0, height());
 	
-		if (kaboom.debug.showLog) {
+		if (debug.showLog) {
 	
 			game.log.forEach((log, i) => {
 	
@@ -2722,7 +2617,7 @@ debug utils
 			app.realTime = realTime;
 	
 			if (!app.skipTime) {
-				app.dt = realDt * kaboom.debug.timeScale;
+				app.dt = realDt * debug.timeScale;
 				app.time += app.dt;
 			}
 	
@@ -2946,8 +2841,8 @@ debug utils
 	
 			draw() {
 	
-				const showArea = kaboom.debug.showArea;
-				const hoverInfo = kaboom.debug.hoverInfo;
+				const showArea = debug.showArea;
+				const hoverInfo = debug.hoverInfo;
 	
 				if (!showArea) {
 					return;
@@ -3300,6 +3195,7 @@ debug utils
 			draw() {
 	
 				const scene = curScene();
+				const spr = assets.sprites[this.spriteID];
 				const q = spr.frames[this.frame];
 	
 				drawSprite(this.spriteID, {
@@ -3322,6 +3218,7 @@ debug utils
 				}
 	
 				const speed = this.animSpeed;
+				const spr = assets.sprites[this.spriteID];
 				const anim = spr.anims[curAnim];
 	
 				timer += dt();
@@ -3344,7 +3241,8 @@ debug utils
 	
 			play(name, loop) {
 	
-				const anim = assets.sprites[this.spriteID].anims[name];
+				const spr = assets.sprites[this.spriteID];
+				const anim = spr.anims[name];
 	
 				if (!anim) {
 					error(`anim not found: ${name}`);
@@ -3373,6 +3271,11 @@ debug utils
 					events[curAnim].end();
 				}
 				curAnim = null;
+			},
+	
+			numFrames() {
+				const spr = assets.sprites[this.spriteID];
+				return spr.frames.length;
 			},
 	
 			curAnim() {
@@ -3592,6 +3495,20 @@ debug utils
 	
 	*/
 	
+	const debug = {
+		paused: false,
+		timeScale: 1,
+		showArea: false,
+		hoverInfo: false,
+		showLog: false,
+		logTime: 6,
+		logMax: 32,
+	};
+	
+	function dbg() {
+		return debug;
+	}
+	
 	function fps() {
 		return 1.0 / dt();
 	}
@@ -3753,144 +3670,132 @@ debug utils
 	
 	}
 	
-	// life cycle
-	kaboom.init = init;
-	kaboom.start = start;
-	
-	// asset load
-	kaboom.loadRoot = loadRoot;
-	kaboom.loadSprite = loadSprite;
-	kaboom.loadAseprite = loadAseprite;
-	kaboom.loadSound = loadSound;
-	kaboom.loadFont = loadFont;
-	kaboom.getSprite = getSprite;
-	
-	// query
-	kaboom.width = width;
-	kaboom.height = height;
-	kaboom.dt = dt;
-	kaboom.time = time;
-	
-	// scene
-	kaboom.scene = scene;
-	kaboom.go = go;
-	
-	// misc
-	kaboom.layers = layers;
-	kaboom.camPos = camPos;
-	kaboom.camScale = camScale;
-	kaboom.camRot = camRot;
-	kaboom.camShake = camShake;
-	kaboom.camIgnore = camIgnore;
-	kaboom.gravity = gravity;
-	
-	// obj
-	kaboom.add = add;
-	kaboom.readd = readd;
-	kaboom.destroy = destroy;
-	kaboom.destroyAll = destroyAll;
-	kaboom.get = get;
-	kaboom.every = every;
-	
-	// comps
-	kaboom.pos = pos;
-	kaboom.scale = scale;
-	kaboom.rotate = rotate;
-	kaboom.color = color;
-	kaboom.origin = origin;
-	kaboom.layer = layer;
-	kaboom.area = area;
-	kaboom.sprite = sprite;
-	kaboom.text = text;
-	kaboom.rect = rect;
-	kaboom.solid = solid;
-	kaboom.timer = timer;
-	kaboom.body = body;
-	
-	// group events
-	kaboom.on = on;
-	kaboom.action = action;
-	kaboom.render = render;
-	kaboom.collides = collides;
-	kaboom.overlaps = overlaps;
-	kaboom.clicks = clicks;
-	
-	// input
-	kaboom.keyDown = keyDown;
-	kaboom.keyPress = keyPress;
-	kaboom.keyPressRep = keyPressRep;
-	kaboom.keyRelease = keyRelease;
-	kaboom.charInput = charInput;
-	kaboom.mouseDown = mouseDown;
-	kaboom.mouseClick = mouseClick;
-	kaboom.mouseRelease = mouseRelease;
-	kaboom.mousePos = mousePos;
-	kaboom.keyIsDown = keyIsDown;
-	kaboom.keyIsPressed = keyIsPressed;
-	kaboom.keyIsPressedRep = keyIsPressedRep;
-	kaboom.keyIsReleased = keyIsReleased;
-	kaboom.mouseIsDown = mouseIsDown;
-	kaboom.mouseIsClicked = mouseIsClicked;
-	kaboom.mouseIsReleased = mouseIsReleased;
-	
-	// timer
-	kaboom.loop = loop;
-	kaboom.wait = wait;
-	
-	// audio
-	kaboom.play = play;
-	kaboom.volume = volume;
-	
-	// math
-	kaboom.makeRng = makeRng;
-	kaboom.rand = rand;
-	kaboom.randSeed = randSeed;
-	kaboom.randl = randl;
-	kaboom.vec2 = vec2;
-	kaboom.rgb = rgb;
-	kaboom.rgba = rgba;
-	kaboom.quad = quad;
-	kaboom.choose = choose;
-	kaboom.chance = chance;
-	kaboom.lerp = lerp;
-	kaboom.map = map;
-	kaboom.wave = wave;
-	
-	// raw draw
-	kaboom.drawSprite = drawSprite;
-	kaboom.drawText = drawText;
-	kaboom.drawRect = drawRect;
-	kaboom.drawRectStroke = drawRectStroke;
-	kaboom.drawLine = drawLine;
-	kaboom.drawPoly = drawPoly;
-	kaboom.drawCircle = drawCircle;
-	
-	// debug
-	kaboom.objCount = objCount;
-	kaboom.fps = fps;
-	kaboom.stepFrame = stepFrame;
-	kaboom.log = log;
-	kaboom.error = error;
-	
-	// level
-	kaboom.addLevel = addLevel;
-	
-	// make every function global
-	kaboom.global = () => {
-		for (const func in kaboom) {
-			if (typeof(kaboom[func]) !== "function") {
-				continue;
-			}
-			if (func === "import") {
-				continue;
-			}
-			Object.defineProperty(window, func, {
-				value: kaboom[func],
-				writable: false,
-			});
-		}
+	const lib = {
+		start,
+		// asset load
+		loadRoot,
+		loadSprite,
+		loadSound,
+		loadFont,
+		newLoader,
+		// query
+		width,
+		height,
+		dt,
+		time,
+		screenshot,
+		// scene
+		scene,
+		go,
+		sceneData,
+		// misc
+		layers,
+		camPos,
+		camScale,
+		camRot,
+		camShake,
+		camIgnore,
+		gravity,
+		// obj
+		add,
+		readd,
+		destroy,
+		destroyAll,
+		get,
+		every,
+		// comps
+		pos,
+		scale,
+		rotate,
+		color,
+		origin,
+		layer,
+		area,
+		sprite,
+		text,
+		rect,
+		solid,
+		timer,
+		body,
+		// group events
+		on,
+		action,
+		render,
+		collides,
+		overlaps,
+		clicks,
+		// input
+		keyDown,
+		keyPress,
+		keyPressRep,
+		keyRelease,
+		charInput,
+		mouseDown,
+		mouseClick,
+		mouseRelease,
+		mousePos,
+		keyIsDown,
+		keyIsPressed,
+		keyIsPressedRep,
+		keyIsReleased,
+		mouseIsDown,
+		mouseIsClicked,
+		mouseIsReleased,
+		// timer
+		loop,
+		wait,
+		// audio
+		play,
+		volume,
+		// math
+		makeRng,
+		rand,
+		randSeed,
+		vec2,
+		rgb,
+		rgba,
+		quad,
+		choose,
+		chance,
+		lerp,
+		map,
+		wave,
+		// raw draw
+		drawSprite,
+		drawText,
+		drawRect,
+		drawRectStroke,
+		drawLine,
+		drawPoly,
+		drawCircle,
+		// debug
+		dbg,
+		objCount,
+		fps,
+		stepFrame,
+		log,
+		error,
+		// level
+		addLevel,
 	};
 	
-	window.kaboom = kaboom;
+	if (gconf.plugins) {
+		for (const src of gconf.plugins) {
+			const map = src(lib);
+			for (const k in map) {
+				lib[k] = map[k];
+			}
+		}
+	}
 	
-	})();
+	if (gconf.global) {
+		for (const k in lib) {
+			window[k] = lib[k];
+		}
+	}
+	
+	appInit();
+	
+	return lib;
+	
+	};
