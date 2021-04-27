@@ -19,6 +19,29 @@ gamepad.subscribe(newVal => {
 
 gameControl.on('connect', pad => gamepad.value = pad);
 
+function wasdControls(player) {
+  document.addEventListener('keydown', e => {
+    const { key } = e;
+    
+    switch(key) {
+      case 'w':
+        player.move(0, -PLAYER_SPEED);
+        break;
+      case 'a':
+        player.move(-PLAYER_SPEED, 0);
+        break;
+      case 's':
+        player.move(0, PLAYER_SPEED);
+        break;
+      case 'd':
+        player.move(PLAYER_SPEED, 0);
+        break;
+      default:
+        break;
+    }
+  });
+}
+
 function arrowControls(player) {
   keyDown('left', () => {
     player.move(-PLAYER_SPEED, 0);
@@ -141,6 +164,7 @@ function gamepadControls(player) {
 export default function playerControls() {
   const player = get('player')[0];
   arrowControls(player);
+  wasdControls(player);
   if(gamepad.value) {
     gamepadControls(player);
   }
