@@ -6,13 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wizard Game</title>
   <style>
+
+    @font-face {
+      font-family: 'VT323';
+      src: url('./VT323.ttf');
+    }
+
     body {
       margin: 0;
       overflow: hidden;
     }
+
+    #hidden_text {
+      visibility: hidden;
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      font-family: 'VT323', monospace;
+    }
+
+    body .dialog {
+      display: none;
+      height: 200px;
+      width: 50%;
+      font-size: 28px;
+      color: antiquewhite;
+      background-color: black;
+      font-family: 'VT323', monospace;
+    }
   </style>
 </head>
 <body>
+  <p id="hidden_text">hidden</p>
+  <dialog id="dialog" class="dialog"></dialog>
   <script src="gamecontroller.min.js"></script>
   <script src="kaboom.js"></script>
   <script src="game.js" type="module"></script>

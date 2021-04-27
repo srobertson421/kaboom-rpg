@@ -4,12 +4,18 @@ import {
   keyDown,
   keyPress,
   keyRelease,
-  get
+  get,
+  add,
+  sprite,
+  pos
 } from '../engine.js';
+
+import gameState from '../state/gameState.js';
 
 const PLAYER_SPEED = 75;
 
 let gamepad = new Observable(null);
+let paused = false;
 
 gamepad.subscribe(newVal => {
   if(newVal !== null) {
@@ -19,127 +25,253 @@ gamepad.subscribe(newVal => {
 
 gameControl.on('connect', pad => gamepad.value = pad);
 
+gameState.subscribe(newVal => {
+
+  console.log('gamestate: ', newVal)
+
+  if(newVal.paused){
+    paused = newVal.paused;
+
+    playerControls();
+
+  }
+})
+
 function arrowControls(player) {
-  keyDown('left', () => {
-    player.move(-PLAYER_SPEED, 0);
-  });
 
-  keyDown('right', () => {
-    player.move(PLAYER_SPEED, 0);
-  });
-  keyDown('up', () => {
-    player.move(0, -PLAYER_SPEED);
-  });
-  keyDown('down', () => {
-    player.move(0, PLAYER_SPEED);
-  });
+    keyDown('left', () => {
+      if(!player.paused){
+        player.move(-PLAYER_SPEED, 0);
+      }
+      
+    });
+  
+    keyDown('right', () => {
+      if(!player.paused){
+        player.move(PLAYER_SPEED, 0);
+      }
+      
+    });
+    keyDown('up', () => {
+      if(!player.paused){
+        player.move(0, -PLAYER_SPEED);
+      }
+      
+    });
+    keyDown('down', () => {
+      if(!player.paused){
+        player.move(0, PLAYER_SPEED);
+      }
+      
+    });
+  
+    keyPress('left', () => {
+      if(!player.paused){
 
-  keyPress('left', () => {
-    player.play('walkLeft');
-    player.isAnimated = 'left';
-  });
-  keyPress('right', () => {
-    player.play('walkRight');
-    player.isAnimated = 'right';
-  });
-  keyPress('up', () => {
-    player.play('walkUp');
-    player.isAnimated = 'up';
-  });
-  keyPress('down', () => {
-    player.play('walkDown');
-    player.isAnimated = 'down';
-  });
+        player.play('walkLeft');
+        player.robe.play('walkLeft');
+        player.staff.play('walkLeft');
+        player.beard.hidden = false;
+        player.beard.frame = 4;
+        player.isAnimated = 'left';
 
-  keyRelease('left', () => {
-    if(player.isAnimated === 'left'){
-      player.stop();
-      player.frame = 6;
-    }
-  });
+      }
+     
+    });
+    keyPress('right', () => {
+      if(!player.paused){
 
-  keyRelease('right', () => {
-    if(player.isAnimated === 'right'){
-      player.stop();
-      player.frame = 9;
-    }
-  });
+        player.play('walkRight');
+        player.robe.play('walkRight');
+        player.staff.play('walkRight');
+        player.beard.hidden = false;
+        player.beard.frame = 5;
+        player.isAnimated = 'right';
 
-  keyRelease('up', () => {
-    if(player.isAnimated === 'up'){
-      player.stop();
-      player.frame = 3;
-    }
-  });
+      }
+      
+    });
+    keyPress('up', () => {
+      if(!player.paused){
 
-  keyRelease('down', () => {
-    if(player.isAnimated === 'down'){
-      player.stop();
-      player.frame = 0;
-    }
-  });
+        player.play('walkUp');
+        player.robe.play('walkUp');
+        player.staff.play('walkUp');
+        player.beard.hidden = true;
+        player.isAnimated = 'up';
+
+      }
+      
+    });
+    keyPress('down', () => {
+      if(!player.paused){
+
+        player.play('walkDown');
+        player.robe.play('walkDown');
+        player.staff.play('walkDown');
+        player.beard.hidden = false;
+        player.beard.frame = 3;
+        player.isAnimated = 'down';
+
+      }
+      
+    });
+  
+    keyRelease('left', () => {
+      if(player.isAnimated === 'left'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 6;
+        player.robe.frame = 6;
+        player.staff.frame = 6;
+      }
+    });
+  
+    keyRelease('right', () => {
+      if(player.isAnimated === 'right'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 9;
+        player.robe.frame = 9;
+        player.staff.frame = 9;
+      }
+    });
+  
+    keyRelease('up', () => {
+      if(player.isAnimated === 'up'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 3;
+        player.robe.frame = 3;
+        player.staff.frame = 3;
+      }
+    });
+  
+    keyRelease('down', () => {
+      if(player.isAnimated === 'down'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 0;
+        player.robe.frame = 0;
+        player.staff.frame = 0;
+      }
+    });
+  
 }
 
 function gamepadControls(player) {
-  gamepad.value.on('up0', () => {
-    player.move(0, -PLAYER_SPEED);
-  })
-  .before('up0', () => {
-    player.play('walkUp');
-    player.isAnimated = 'up';
-  })
-  .after('up0', () => {
-    if(player.isAnimated === 'up'){
-      player.stop();
-      player.frame = 3;
-    }
-  });
 
-  gamepad.value.on('down0', () => {
-    player.move(0, PLAYER_SPEED);
-  })
-  .before('down0', () => {
-    player.play('walkDown');
-    player.isAnimated = 'down';
-  })
-  .after('down0', () => {
-    if(player.isAnimated === 'down'){
-      player.stop();
-      player.frame = 0;
-    }
-  });
-
-  gamepad.value.on('left0', () => {
-    player.move(-PLAYER_SPEED, 0);
-  })
-  .before('left0', () => {
-    player.play('walkLeft');
-    player.isAnimated = 'left';
-  })
-  .after('left0', () => {
-    if(player.isAnimated === 'left'){
-      player.stop();
-      player.frame = 6;
-    }
-  });
-
-  gamepad.value.on('right0', () => {
-    player.move(PLAYER_SPEED, 0);
-  })
-  .before('right0', () => {
-    player.play('walkRight');
-    player.isAnimated = 'right';
-  })
-  .after('right0', () => {
-    if(player.isAnimated === 'right'){
-      player.stop();
-      player.frame = 9;
-    }
-  });
+    gamepad.value.on('up0', () => {
+      if(!player.paused){
+        player.move(0, -PLAYER_SPEED);
+      }
+    })
+    .before('up0', () => {
+      if(!player.paused){
+        player.play('walkUp');
+        player.robe.play('walkUp');
+        player.staff.play('walkUp');
+        player.beard.hidden = true;
+        player.isAnimated = 'up';
+      }
+    })
+    .after('up0', () => {
+      if(player.isAnimated === 'up'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 3;
+        player.robe.frame = 3;
+        player.staff.frame = 3;
+      }
+    });
+  
+    gamepad.value.on('down0', () => {
+      if(!player.paused){
+        player.move(0, PLAYER_SPEED);
+      }
+    })
+    .before('down0', () => {
+      if(!player.paused){
+        player.play('walkDown');
+        player.robe.play('walkDown');
+        player.staff.play('walkDown');
+        player.beard.hidden = false;
+        player.beard.frame = 3;
+        player.isAnimated = 'down';
+      }
+    })
+    .after('down0', () => {
+      if(player.isAnimated === 'down'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 0;
+        player.robe.frame = 0;
+        player.staff.frame = 0;
+      }
+    });
+  
+    gamepad.value.on('left0', () => {
+      if(!player.paused){
+       player.move(-PLAYER_SPEED, 0);
+      }
+    })
+    .before('left0', () => {
+      if(!player.paused){
+        player.play('walkLeft');
+        player.robe.play('walkLeft');
+        player.staff.play('walkLeft');
+        player.beard.hidden = false;
+        player.beard.frame = 4;
+        player.isAnimated = 'left';
+      }
+    })
+    .after('left0', () => {
+      if(player.isAnimated === 'left'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 6;
+        player.robe.frame = 6;
+        player.staff.frame = 6;
+      }
+    });
+  
+    gamepad.value.on('right0', () => {
+      if(!player.paused){
+       player.move(PLAYER_SPEED, 0);
+      }
+    })
+    .before('right0', () => {
+      if(!player.paused){
+        player.play('walkRight');
+        player.robe.play('walkRight');
+        player.staff.play('walkRight');
+        player.beard.hidden = false;
+        player.beard.frame = 5;
+        player.isAnimated = 'right';
+      }
+    })
+    .after('right0', () => {
+      if(player.isAnimated === 'right'){
+        player.stop();
+        player.robe.stop();
+        player.staff.stop();
+        player.frame = 9;
+        player.robe.frame = 9;
+        player.staff.frame = 9;
+      }
+    });
 }
 
 export default function playerControls() {
   const player = get('player')[0];
+
   arrowControls(player);
   if(gamepad.value) {
     gamepadControls(player);

@@ -1,10 +1,5 @@
 import {
-  get,
-  keyDown,
-  keyPress,
-  keyRelease,
   add,
-  readd,
   sprite,
   pos,
   overlaps,
@@ -13,23 +8,86 @@ import {
   action,
   vec2,
   camPos,
-  width,
-  height
+  collides,
+  every
 } from '../engine.js';
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
 import SCALE from '../state/scale.js';
 import levels from '../levels.js';
+import inventory from '../state/inventory.js';
+import currentEquipment from '../state/currentEquipment.js';
+import gameState from '../state/gameState.js';
+
+import {
+  showDialog,
+  hideDialog
+} from '../utils/dialog.js';
 
 export function addPlayer() {
-  return add([
+
+  let player = add([
     sprite('character', { animSpeed: 0.25 }),
     pos(playerPos.value.x, playerPos.value.y),
-    'player'
+    'player',
+    'pausable'
   ]);
+
+  player = checkEquipment(player);
+
+  player.beard = addPlayerBeard();
+  player.beard.frame = 3;
+
+  return player;
+  
 }
 
-export function playerCollisions() {
+function checkEquipment(player){
+
+  if(currentEquipment.value.body){
+    const robeName = inventory.value.body[currentEquipment.value.body.index].name;
+    player.robe = addPlayerRobe(robeName);
+  }
+
+  if(currentEquipment.value.hands){
+    const staffName = inventory.value.hands[currentEquipment.value.hands.index].name;
+    player.staff = addPlayerStaff(staffName);
+  }
+
+  return player;
+}
+
+function addPlayerRobe(name) {
+  
+  return add([
+    sprite(name, { animSpeed: 0.25 }),
+    pos(playerPos.value.x, playerPos.value.y),
+    'robe'
+  ]);
+  
+}
+
+function addPlayerStaff(name) {
+  
+  return add([
+    sprite(name, { animSpeed: 0.25 }),
+    pos(playerPos.value.x, playerPos.value.y),
+    'staff'
+  ]);
+  
+}
+
+function addPlayerBeard() {
+  
+  return add([
+    sprite('beard'),
+    pos(playerPos.value.x, playerPos.value.y),
+    'beard'
+  ]);
+  
+}
+
+export function playerOverlaps() {
   overlaps('flower', 'player', (flower, player) => {
     const randomChance = Math.round(rand(1,75));
 
@@ -40,6 +98,27 @@ export function playerCollisions() {
   });
 }
 
+export function playerCollisions() {
+  collides('mentor', 'player', (mentor, player) => {
+
+
+    
+ 
+    every("pausable", (obj) => {
+      console.log('obj: ', obj);
+      // obj.pause();
+      obj.paused = true;
+    });
+
+    gameState.value = {
+      ...gameState.value,
+      paused: true
+    }
+
+    showDialog("Hey nerd");
+ 
+  });
+}
 
 const levelWidth = 480 * (SCALE.value * 2);
 const levelHeight = 304 * (SCALE.value * 2);
@@ -187,14 +266,26 @@ function checkCurrentLevel(player) {
     }
 
   }
-
-
 }
-
 
 export function playerActions() {
   action('player', player => {
     playerPos.value = player.pos;
+
+    if(player.robe){
+      player.robe.pos.x = player.pos.x;
+      player.robe.pos.y = player.pos.y;
+    }
+
+    if(player.staff){
+      player.staff.pos.x = player.pos.x;
+      player.staff.pos.y = player.pos.y;
+    }
+
+    if(player.beard){
+      player.beard.pos.x = player.pos.x;
+      player.beard.pos.y = player.pos.y;
+    }    
 
     checkCurrentLevel(player);
 

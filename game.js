@@ -14,17 +14,6 @@ loadSprite('tileSheet', '/assets/basictiles.png', {
   sliceY: 15
 });
 
-// loadSprite('character', '/assets/characters.png', {
-//   sliceX: 12,
-//   sliceY: 8,
-//   anims: {
-//     walkDown: [0,2],
-//     walkLeft: [12,14],
-//     walkRight: [24,26],
-//     walkUp: [36,38]
-//   }
-// });
-
 loadSprite('character', '/assets/wizard.png', {
   sliceX: 3,
   sliceY: 4,
@@ -35,6 +24,44 @@ loadSprite('character', '/assets/wizard.png', {
     walkUp: [4,5]
   }
 });
+
+loadSprite('blue_robe', '/assets/wizard_robe.png', {
+  sliceX: 3,
+  sliceY: 4,
+  anims: {
+    walkDown: [1,2],
+    walkLeft: [7,8],
+    walkRight: [10,11],
+    walkUp: [4,5]
+  }
+})
+
+loadSprite('blue_robe_staff', '/assets/robe_wizard_staff.png', {
+  sliceX: 3,
+  sliceY: 4,
+  anims: {
+    walkDown: [1,2],
+    walkLeft: [7,8],
+    walkRight: [10,11],
+    walkUp: [4,5]
+  }
+})
+
+loadSprite('naked_staff', '/assets/naked_wizard_staff.png', {
+  sliceX: 3,
+  sliceY: 4,
+  anims: {
+    walkDown: [1,2],
+    walkLeft: [7,8],
+    walkRight: [10,11],
+    walkUp: [4,5]
+  }
+})
+
+loadSprite('beard', '/assets/wizard_beard.png', {
+  sliceX: 3,
+  sliceY: 4
+})
 
 loadSprite('fire', '/assets/camp_fire.png', {
   sliceX: 3,
@@ -55,6 +82,18 @@ loadSprite('mentor', '/assets/old_wizard.png', {
   }
 });
 
+loadSprite('dog', '/assets/dog_wizard.png', {
+  sliceX: 3,
+  sliceY: 4,
+  anims: {
+    sitWag: [0,1],
+    walkDown: [2,3],
+    walkUp: [4,5],
+    walkLeft: [6,7],
+    walkRight: [8,9]
+  }
+});
+
 loadSound('overworldSound', '/assets/overworld.ogg');
 
 init({
@@ -67,3 +106,6 @@ overworldScene();
 battleScene();
 
 start('overworld');
+
+
+

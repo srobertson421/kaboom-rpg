@@ -33,5 +33,10 @@ export const addLevel = engine.addLevel;
 export const vec2 = engine.vec2;
 export const camScale = engine.camScale;
 export const camPos = engine.camPos;
+export const solid = engine.solid;
+export const collides = engine.collides;
+export const every = engine.every;
+
+
 
 export default engine;
