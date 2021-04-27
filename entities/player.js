@@ -18,6 +18,7 @@ import levels from '../levels.js';
 import inventory from '../state/inventory.js';
 import currentEquipment from '../state/currentEquipment.js';
 import gameState from '../state/gameState.js';
+import { overworldMusic } from '../state/music.js';
 
 import {
   showDialog,
@@ -33,21 +34,13 @@ export function addPlayer() {
     'pausable'
   ]);
 
-  player = checkEquipment(player);
-
-  player.beard = addPlayerBeard();
-  player.beard.frame = 3;
-
-  return player;
-  
-}
-
-function checkEquipment(player){
-
   if(currentEquipment.value.body){
     const robeName = inventory.value.body[currentEquipment.value.body.index].name;
     player.robe = addPlayerRobe(robeName);
   }
+
+  player.beard = addPlayerBeard();
+  player.beard.frame = 3;
 
   if(currentEquipment.value.hands){
     const staffName = inventory.value.hands[currentEquipment.value.hands.index].name;
@@ -55,6 +48,7 @@ function checkEquipment(player){
   }
 
   return player;
+  
 }
 
 function addPlayerRobe(name) {
@@ -100,10 +94,6 @@ export function playerOverlaps() {
 
 export function playerCollisions() {
   collides('mentor', 'player', (mentor, player) => {
-
-
-    
- 
     every("pausable", (obj) => {
       console.log('obj: ', obj);
       // obj.pause();
@@ -116,7 +106,6 @@ export function playerCollisions() {
     }
 
     showDialog("Hey nerd");
- 
   });
 }
 
@@ -289,7 +278,7 @@ export function playerActions() {
 
     checkCurrentLevel(player);
 
-    camPos(player.pos);  
+    camPos(player.pos);
 
     if(camPos().x <= screenLeftWidthOffset) {
       camPos(screenLeftWidthOffset, camPos().y);
