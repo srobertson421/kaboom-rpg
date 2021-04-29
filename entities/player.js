@@ -9,7 +9,8 @@ import {
   vec2,
   camPos,
   collides,
-  every
+  every,
+  keyPress
 } from '../engine.js';
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
@@ -95,8 +96,6 @@ export function playerOverlaps() {
 export function playerCollisions() {
   collides('mentor', 'player', (mentor, player) => {
     every("pausable", (obj) => {
-      console.log('obj: ', obj);
-      // obj.pause();
       obj.paused = true;
     });
 
@@ -104,6 +103,13 @@ export function playerCollisions() {
       ...gameState.value,
       paused: true
     }
+
+    keyPress('space', () => {
+      every("pausable", (obj) => {
+        obj.paused = false;
+      });
+      hideDialog();
+    });
 
     showDialog("Hey nerd");
   });
@@ -217,7 +223,6 @@ function checkCurrentLevel(player) {
     } else {
 
       playerPos.value = vec2(0, player.pos.y);
-      console.log('player position: ', player);
       player.pos.x = 0;
     }
 

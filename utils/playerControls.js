@@ -7,12 +7,8 @@ import {
   get
 } from '../engine.js';
 
-import gameState from '../state/gameState.js';
-
 const PLAYER_SPEED = 75;
-
 let gamepad = new Observable(null);
-let paused = false;
 
 gamepad.subscribe(newVal => {
   if(newVal !== null) {
@@ -21,18 +17,6 @@ gamepad.subscribe(newVal => {
 });
 
 gameControl.on('connect', pad => gamepad.value = pad);
-
-gameState.subscribe(newVal => {
-
-  console.log('gamestate: ', newVal)
-
-  if(newVal.paused){
-    paused = newVal.paused;
-
-    playerControls();
-
-  }
-});
 
 function leftDown(player) {
   if(!player.paused){
@@ -195,7 +179,6 @@ function gamepadControls(player) {
 
 export default function playerControls() {
   const player = get('player')[0];
-
   keyboardControls(player);
   if(gamepad.value) {
     gamepadControls(player);
