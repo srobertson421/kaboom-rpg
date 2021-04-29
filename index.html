@@ -34,11 +34,28 @@
       background-color: black;
       font-family: 'VT323', monospace;
     }
+
+    body .talk_box {
+      display: none;
+      background-color: rgba(0,0,0,.4);
+      font-size: 28px;
+      color: antiquewhite;
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+      top: 0px;
+      text-align: center;
+      padding: 40px;
+      border: solid 2px antiquewhite;
+      width: 25%;
+    }
   </style>
 </head>
 <body>
   <p id="hidden_text">hidden</p>
   <dialog id="dialog" class="dialog"></dialog>
+  <div id="talk_box" class="talk_box"></div>
   <script src="gamecontroller.min.js"></script>
   <script src="kaboom.js"></script>
   <script src="game.js" type="module"></script>

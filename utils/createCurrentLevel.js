@@ -2,14 +2,49 @@ import {
   addLevel,
   vec2,
   sprite,
-  rand
+  rand,
+  layers,
+  layer
 } from '../engine.js';
 
 import levels from '../levels.js';
 import currentLevel from '../state/currentLevel.js';
 
 export default function createCurrentLevel() {
-  const map = addLevel(levels[currentLevel.value], {
+
+
+  layers([
+      'base',
+      'bg',
+      'player',
+      'ui',
+  ], 'game');
+
+
+  const baseLevel = [
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+    'gggggggggggggggggggggggggggggg',
+  ];
+
+
+  const baseMap = addLevel(baseLevel, {
     width: 16,
     height: 16,
     pos: vec2(0, 0),
@@ -18,15 +53,25 @@ export default function createCurrentLevel() {
 
       return [
         sprite('tileSheet', { frame: tileNum }),
+        layer('base'),
         'grass'
       ]
-    },
+    }
+  }) 
+
+
+  const map = addLevel(levels[currentLevel.value], {
+    width: 16,
+    height: 16,
+    pos: vec2(0, 0),
     'f': [
       sprite('tileSheet', { frame: 12 }),
+      layer('bg'),
       'flower'
     ],
     'p': [
       sprite('tileSheet', { frame: 10 }),
+      layer('bg'),
       'path'
     ]
   });

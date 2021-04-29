@@ -1,29 +1,20 @@
 import {
   get,
-  keyDown,
   keyPress,
-  keyRelease,
   add,
-  readd,
   sprite,
   pos,
-  overlaps,
-  rand,
-  go,
   action,
-  vec2,
-  camPos,
-  width,
-  height,
-  loop,
-  wait,
+  every,
+  layer,
   solid
 } from '../engine.js';
+
+import talkBox, { talkBoxText, talkBoxNPC } from '../state/talkBox.js';
 
 const MENTOR_SPEED = 10;
 
 function mentorStop(mentor){
-  mentor.stopped = true;
   mentor.stop();
   if(mentor.direction === 'down'){
     mentor.frame = 0;
@@ -138,6 +129,8 @@ export function addMentor() {
   const mentor = add([
     sprite('mentor', {animSpeed: 0.25}),
     pos(230, 0),
+    layer('player'),
+    solid(),
     'mentor',
     'pausable',
     {
@@ -153,9 +146,24 @@ export function addMentor() {
 
 export function mentorActions(){
   action('mentor', mentor => {
+    const player = get('player')[0];
     mentor.resolve();
     if(!mentor.checking){
       moveToPathPoint(mentor);
+    }
+    let showInteraction = player.pos.dist(mentor.pos) <= 20;
+    if(showInteraction){
+      talkBoxText.value = 'Press E To Talk';
+      talkBoxNPC.value = 'mentor';
+      talkBox.value = true;
+      mentor.checking = true;
+      mentorStop(mentor);
+    } else {
+      talkBox.value = false;
+      if(mentor.checking){
+        setMentorAnimation(mentor);
+      }
+      mentor.checking = false;
     }
   })
 }

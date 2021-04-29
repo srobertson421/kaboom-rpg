@@ -93,6 +93,15 @@ loadSprite('dog', '/assets/dog_wizard.png', {
   }
 });
 
+
+loadSprite('dogAura', '/assets/dog_aura.png', {
+  sliceX: 3,
+  sliceY: 3,
+  anims: {
+    aura: [0,7]
+  }
+});
+
 loadSound('overworldSound', '/assets/overworld.ogg');
 
 overworldScene();
