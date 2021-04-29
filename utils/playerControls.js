@@ -4,8 +4,39 @@ import {
   keyDown,
   keyPress,
   keyRelease,
-  get
+  get,
+  wait
 } from '../engine.js';
+
+import {
+  showDialog,
+  hideDialog
+} from '../utils/dialog.js';
+import talkBox, { talkBoxText, talkBoxNPC } from '../state/talkBox.js';
+import dialog, { dialogText } from '../state/dialog.js';
+import dogAura from '../state/dogAura.js';
+
+function spaceToTalk(){
+  showTalkBox("Press E To Talk");
+
+  keyPress('e', () => {
+    talking();
+    hideTalkBox();
+  })
+}
+
+function talking(){
+  
+
+  keyPress('space', () => {
+    every("pausable", (obj) => {
+      obj.paused = false;
+    });
+    hideDialog();
+  });
+ 
+  showDialog("Hey nerd");
+}
 
 const PLAYER_SPEED = 75;
 let gamepad = new Observable(null);
@@ -148,6 +179,36 @@ function keyboardControls(player) {
   keyPress('d', () => rightPress(player));
   keyPress('w', () => upPress(player));
   keyPress('s', () => downPress(player));
+
+  keyPress('e', () => {
+    if(talkBox.value){
+
+
+      
+
+      if(talkBoxNPC.value === 'mentor'){
+        dialog.value = true;
+        dialogText.value = 'Old Wizard: Fudge off you fuck!';
+      }
+      
+      if(talkBoxNPC.value === 'dog'){
+        console.log('e press dog , ', talkBoxNPC);
+        dogAura.value = true;
+
+        wait(1, ()=> {
+          dogAura.value = false;
+        })
+      }
+      
+      talkBox.value = false;
+    }
+  }); 
+
+  keyPress('space', () => {
+    if(dialog.value){
+      dialog.value = false;
+    }
+  });
 
   keyRelease('left', () => leftRelease(player));
   keyRelease('right', () => rightRelease(player));

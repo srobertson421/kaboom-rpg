@@ -1,24 +1,16 @@
 import {
-  get,
-  keyDown,
-  keyPress,
-  keyRelease,
   add,
-  readd,
   sprite,
   pos,
-  overlaps,
-  rand,
-  go,
   action,
-  vec2,
-  camPos,
-  width,
-  height,
-  loop,
   wait,
-  solid
+  solid,
+  layer,
+  get,
+  destroy
 } from '../engine.js';
+
+import talkBox, { talkBoxText, talkBoxNPC } from '../state/talkBox.js';
 
 const MENTOR_SPEED = 20;
 
@@ -149,6 +141,8 @@ export function addDog() {
   const dog = add([
     sprite('dog', {animSpeed: 0.25}),
     pos(100,0),
+    layer('player'),
+    solid(),
     'dog',
     'pausable',
     {
@@ -164,9 +158,46 @@ export function addDog() {
 
 export function dogActions(){
   action('dog', dog => {
+    const player = get('player')[0];
     dog.resolve();
     if(!dog.checking){
       moveToPathPoint(dog);
+    }
+
+    if(dog.aura){
+      dog.aura.pos.x = dog.pos.x;
+      dog.aura.pos.y = dog.pos.y;
+    }
+
+    let showInteraction = player.pos.dist(dog.pos) <= 20;
+    if(showInteraction){
+      talkBoxText.value = 'Press E To Pet';
+      talkBoxNPC.value = 'dog';
+      talkBox.value = true;
+      dog.checking = true;
+      if(!dog.interacted){
+        dog.interacted = true;
+        dog.move(0,0);
+        sitWag(dog);
+      }
+      
+    } else {
+
+      if(dog.interacted){
+
+        talkBox.value = false;
+        if(dog.checking){
+          setDogAnimation(dog);
+        }
+        dog.checking = false;
+        dog.interacted = false;
+
+        if(dog.aura){
+          destroy(dog.aura);
+        }
+
+      }
+     
     }
   })
 }
