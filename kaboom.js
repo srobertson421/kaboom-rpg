@@ -2974,10 +2974,10 @@ window.kaboom = (gconf = {}) => {
 					if (!other.area) {
 						return;
 					}
-	
-					if (this.layer !== other.layer) {
-						return;
-					}
+          //TODO fix the layers foo
+					// if (this.layer !== other.layer) {
+					// 	return;
+					// }
 	
 					const a1 = this._worldArea();
 					const a2 = other._worldArea();

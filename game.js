@@ -13,6 +13,11 @@ loadSprite('tileSheet', '/assets/basictiles.png', {
   sliceY: 15
 });
 
+loadSprite('mapTiles', '/assets/mapTiles.png', {
+  sliceX: 7,
+  sliceY: 8
+});
+
 loadSprite('character', '/assets/wizard.png', {
   sliceX: 3,
   sliceY: 4,

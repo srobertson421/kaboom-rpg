@@ -12,7 +12,8 @@ import {
   every,
   keyPress,
   layer,
-  solid
+  solid,
+  area
 } from '../engine.js';
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
@@ -26,6 +27,7 @@ export function addPlayer() {
   let player = add([
     sprite('character', { animSpeed: 0.25 }),
     pos(playerPos.value.x, playerPos.value.y),
+    area(vec2(6), vec2(24)),
     layer('player'),
     solid(),
     'player',

@@ -36,7 +36,7 @@ import playerControls from '../utils/playerControls.js';
 function addFire() {
   return add([
     sprite('fire', { animSpeed: 0.25 }),
-    pos(150, 100),
+    pos(426, 40),
     layer('bg'),
     'fire'
   ]);
