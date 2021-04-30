@@ -9,7 +9,10 @@ import {
   vec2,
   camPos,
   collides,
-  every
+  every,
+  keyPress,
+  layer,
+  solid
 } from '../engine.js';
 import playerPos from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
@@ -17,19 +20,14 @@ import SCALE from '../state/scale.js';
 import levels from '../levels.js';
 import inventory from '../state/inventory.js';
 import currentEquipment from '../state/currentEquipment.js';
-import gameState from '../state/gameState.js';
 import { overworldMusic } from '../state/music.js';
-
-import {
-  showDialog,
-  hideDialog
-} from '../utils/dialog.js';
-
 export function addPlayer() {
 
   let player = add([
     sprite('character', { animSpeed: 0.25 }),
     pos(playerPos.value.x, playerPos.value.y),
+    layer('player'),
+    solid(),
     'player',
     'pausable'
   ]);
@@ -56,6 +54,7 @@ function addPlayerRobe(name) {
   return add([
     sprite(name, { animSpeed: 0.25 }),
     pos(playerPos.value.x, playerPos.value.y),
+    layer('player'),
     'robe'
   ]);
   
@@ -66,6 +65,7 @@ function addPlayerStaff(name) {
   return add([
     sprite(name, { animSpeed: 0.25 }),
     pos(playerPos.value.x, playerPos.value.y),
+    layer('player'),
     'staff'
   ]);
   
@@ -76,6 +76,7 @@ function addPlayerBeard() {
   return add([
     sprite('beard'),
     pos(playerPos.value.x, playerPos.value.y),
+    layer('player'),
     'beard'
   ]);
   
@@ -84,7 +85,7 @@ function addPlayerBeard() {
 export function playerOverlaps() {
   overlaps('flower', 'player', (flower, player) => {
     const randomChance = Math.round(rand(1,75));
-
+    console.log('flowers attack');
     if(randomChance === 45) {
       // overworldMusic.value.pause();
       go('battle');
@@ -92,20 +93,12 @@ export function playerOverlaps() {
   });
 }
 
+
+
+
 export function playerCollisions() {
   collides('mentor', 'player', (mentor, player) => {
-    every("pausable", (obj) => {
-      console.log('obj: ', obj);
-      // obj.pause();
-      obj.paused = true;
-    });
-
-    gameState.value = {
-      ...gameState.value,
-      paused: true
-    }
-
-    showDialog("Hey nerd");
+    
   });
 }
 
@@ -217,7 +210,6 @@ function checkCurrentLevel(player) {
     } else {
 
       playerPos.value = vec2(0, player.pos.y);
-      console.log('player position: ', player);
       player.pos.x = 0;
     }
 
@@ -259,6 +251,7 @@ function checkCurrentLevel(player) {
 
 export function playerActions() {
   action('player', player => {
+    player.resolve();
     playerPos.value = player.pos;
 
     if(player.robe){

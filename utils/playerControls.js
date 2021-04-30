@@ -4,15 +4,42 @@ import {
   keyDown,
   keyPress,
   keyRelease,
-  get
+  get,
+  wait
 } from '../engine.js';
 
-import gameState from '../state/gameState.js';
+import {
+  showDialog,
+  hideDialog
+} from '../utils/dialog.js';
+import talkBox, { talkBoxText, talkBoxNPC } from '../state/talkBox.js';
+import dialog, { dialogText } from '../state/dialog.js';
+import dogAura from '../state/dogAura.js';
+
+function spaceToTalk(){
+  showTalkBox("Press E To Talk");
+
+  keyPress('e', () => {
+    talking();
+    hideTalkBox();
+  })
+}
+
+function talking(){
+  
+
+  keyPress('space', () => {
+    every("pausable", (obj) => {
+      obj.paused = false;
+    });
+    hideDialog();
+  });
+ 
+  showDialog("Hey nerd");
+}
 
 const PLAYER_SPEED = 75;
-
 let gamepad = new Observable(null);
-let paused = false;
 
 gamepad.subscribe(newVal => {
   if(newVal !== null) {
@@ -21,18 +48,6 @@ gamepad.subscribe(newVal => {
 });
 
 gameControl.on('connect', pad => gamepad.value = pad);
-
-gameState.subscribe(newVal => {
-
-  console.log('gamestate: ', newVal)
-
-  if(newVal.paused){
-    paused = newVal.paused;
-
-    playerControls();
-
-  }
-});
 
 function leftDown(player) {
   if(!player.paused){
@@ -165,6 +180,36 @@ function keyboardControls(player) {
   keyPress('w', () => upPress(player));
   keyPress('s', () => downPress(player));
 
+  keyPress('e', () => {
+    if(talkBox.value){
+
+
+      
+
+      if(talkBoxNPC.value === 'mentor'){
+        dialog.value = true;
+        dialogText.value = 'Old Wizard: Fudge off you fuck!';
+      }
+      
+      if(talkBoxNPC.value === 'dog'){
+        console.log('e press dog , ', talkBoxNPC);
+        dogAura.value = true;
+
+        wait(1, ()=> {
+          dogAura.value = false;
+        })
+      }
+      
+      talkBox.value = false;
+    }
+  }); 
+
+  keyPress('space', () => {
+    if(dialog.value){
+      dialog.value = false;
+    }
+  });
+
   keyRelease('left', () => leftRelease(player));
   keyRelease('right', () => rightRelease(player));
   keyRelease('up', () => upRelease(player));
@@ -195,7 +240,6 @@ function gamepadControls(player) {
 
 export default function playerControls() {
   const player = get('player')[0];
-
   keyboardControls(player);
   if(gamepad.value) {
     gamepadControls(player);

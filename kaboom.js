@@ -3127,9 +3127,10 @@ window.kaboom = (gconf = {}) => {
 					return false;
 				}
 	
-				if (this.layer !== other.layer) {
-					return false;
-				}
+        //TODO from derek commented out , but might need to update for different layers. 
+				// if (this.layer !== other.layer) {
+				// 	return false;
+				// }
 	
 				const a1 = this._worldArea();
 				const a2 = other._worldArea();

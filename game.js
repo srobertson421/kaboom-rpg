@@ -111,6 +111,14 @@ loadSprite('plasma', '/assets/plasma_canon.png', {
 
 loadSprite('rat', '/assets/rat.png');
 
+loadSprite('dogAura', '/assets/dog_aura.png', {
+  sliceX: 3,
+  sliceY: 3,
+  anims: {
+    aura: [0,7]
+  }
+});
+
 loadSound('overworldSound', '/assets/overworld.ogg');
 
 overworldScene();

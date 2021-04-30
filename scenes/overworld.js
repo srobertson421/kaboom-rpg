@@ -6,7 +6,8 @@ import {
   sprite,
   pos,
   get,
-  play
+  play,
+  layer
 } from '../engine.js';
 import { overworldMusic } from '../state/music.js';
 import SCALE from '../state/scale.js'
@@ -36,6 +37,7 @@ function addFire() {
   return add([
     sprite('fire', { animSpeed: 0.25 }),
     pos(150, 100),
+    layer('bg'),
     'fire'
   ]);
 }

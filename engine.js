@@ -39,6 +39,8 @@ export const camPos = engine.camPos;
 export const solid = engine.solid;
 export const collides = engine.collides;
 export const every = engine.every;
+export const layers = engine.layers;
+export const layer = engine.layer;
 
 
 
