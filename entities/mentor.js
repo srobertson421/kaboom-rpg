@@ -157,13 +157,25 @@ export function mentorActions(){
       talkBoxNPC.value = 'mentor';
       talkBox.value = true;
       mentor.checking = true;
-      mentorStop(mentor);
-    } else {
-      talkBox.value = false;
-      if(mentor.checking){
-        setMentorAnimation(mentor);
+      
+
+      if(!mentor.interacted){
+        mentor.interacted = true;
+        mentorStop(mentor);
       }
-      mentor.checking = false;
+    } else {
+
+      if(mentor.interacted){
+        
+        talkBox.value = false;
+        if(mentor.checking){
+          setMentorAnimation(mentor);
+        }
+        mentor.interacted = false;
+        mentor.checking = false;
+
+      }
+      
     }
   })
 }

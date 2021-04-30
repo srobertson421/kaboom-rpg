@@ -182,13 +182,10 @@ function keyboardControls(player) {
 
   keyPress('e', () => {
     if(talkBox.value){
-
-
-      
-
       if(talkBoxNPC.value === 'mentor'){
-        dialog.value = true;
         dialogText.value = 'Old Wizard: Fudge off you fuck!';
+        dialog.value = true;
+        
       }
       
       if(talkBoxNPC.value === 'dog'){
