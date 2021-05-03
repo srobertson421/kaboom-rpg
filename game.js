@@ -4,9 +4,8 @@ import {
   loadSound
 } from './engine.js';
 import overworldScene from './scenes/overworld.js';
+import interiorScene from './scenes/interior.js';
 import battleScene from './scenes/battle.js';
-
-// kaboom.debug.showArea = true;
 
 loadSprite('tileSheet', '/assets/basictiles.png', {
   sliceX: 8,
@@ -16,6 +15,19 @@ loadSprite('tileSheet', '/assets/basictiles.png', {
 loadSprite('mapTiles', '/assets/mapTiles.png', {
   sliceX: 7,
   sliceY: 8
+});
+
+loadSprite('barTiles', '/assets/tilesInterior.png', {
+  sliceX: 5,
+  sliceY: 6
+});
+
+loadSprite('bar', '/assets/house1.png', {
+  sliceX: 2,
+  sliceY: 2,
+  anims: {
+    smoke: [2,3]
+  }
 });
 
 loadSprite('character', '/assets/wizard.png', {
@@ -110,6 +122,7 @@ loadSprite('dogAura', '/assets/dog_aura.png', {
 loadSound('overworldSound', '/assets/overworld.ogg');
 
 overworldScene();
+interiorScene();
 battleScene();
 
 start('overworld');

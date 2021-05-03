@@ -13,21 +13,23 @@ import {
   keyPress,
   layer,
   solid,
-  area
+  area,
+  rect
 } from '../engine.js';
-import playerPos from '../state/playerPos.js';
+import playerPos, { storedPosition } from '../state/playerPos.js';
 import currentLevel from '../state/currentLevel.js';
 import SCALE from '../state/scale.js';
 import levels from '../levels.js';
 import inventory from '../state/inventory.js';
 import currentEquipment from '../state/currentEquipment.js';
 import { overworldMusic } from '../state/music.js';
-export function addPlayer() {
+export function addPlayer(position) {
 
   let player = add([
     sprite('character', { animSpeed: 0.25 }),
-    pos(playerPos.value.x, playerPos.value.y),
-    area(vec2(6), vec2(24)),
+    pos(position[0], position[1]),
+    area(vec2(6), vec2(12)),
+    // rect(16, 16),
     layer('player'),
     solid(),
     'player',
@@ -85,22 +87,41 @@ function addPlayerBeard() {
 }
 
 export function playerOverlaps() {
-  overlaps('flower', 'player', (flower, player) => {
-    const randomChance = Math.round(rand(1,75));
-    console.log('flowers attack');
-    if(randomChance === 45) {
-      // overworldMusic.value.pause();
-      go('battle');
+  overlaps('bar', 'player', (bar, player) => {
+
+    const sideX = Math.floor((bar.width - 20) / 2);
+    const middleX = [bar.pos.x + sideX, (bar.pos.x + bar.width) - sideX]
+    console.log(middleX, sideX);
+
+    if(player.pos.x > middleX[0] && player.pos.x < middleX[1]){
+      if(player.pos.y > bar.pos.y){
+        // TODO door needs to determine the current interior level
+        // TODO need to check where the player is on the building how overlapped we are
+        levels[currentLevel.value].pos = [player.pos.x, player.pos.y];
+        go('interior');
+      }
     }
   });
+
+  overlaps('borderPortal', 'player', (mat, player) => {
+
+    player.pos.x = levels[currentLevel.value].pos[0];
+    player.pos.y = levels[currentLevel.value].pos[1];
+
+    go('overworld');
+
+  })
 }
 
 
 
 
 export function playerCollisions() {
-  collides('mentor', 'player', (mentor, player) => {
+  collides('counter', 'player', (counter, player) => {
+
     
+      
+      // counter.layer = 'ui';
   });
 }
 

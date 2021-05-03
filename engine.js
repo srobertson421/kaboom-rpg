@@ -1,6 +1,7 @@
 const engine = kaboom({
   fullscreen: true,
-	scale: 2
+	scale: 2,
+  debug: true
 });
 
 export const init = engine.init;
@@ -42,6 +43,7 @@ export const every = engine.every;
 export const layers = engine.layers;
 export const layer = engine.layer;
 export const area = engine.area;
+export const rect = engine.rect;
 
 
 
