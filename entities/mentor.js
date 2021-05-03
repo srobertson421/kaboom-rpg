@@ -136,7 +136,7 @@ export function addMentor() {
     {
       reverse: false,
       stopped: false,
-      path: [[230, 0], [230, 190], [480, 190]],
+      path: [[230, 0], [230, 140], [450, 140]],
       pathIndex: 0,
       checking: false,
       direction: 'down'

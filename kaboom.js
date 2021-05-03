@@ -3110,9 +3110,9 @@ window.kaboom = (gconf = {}) => {
 					return false;
 				}
 	
-				if (this.layer !== other.layer) {
-					return false;
-				}
+				// if (this.layer !== other.layer) {
+				// 	return false;
+				// }
 	
 				const a1 = this._worldArea();
 				const a2 = other._worldArea();

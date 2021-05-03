@@ -42,6 +42,15 @@ function addFire() {
   ]);
 }
 
+function addBar(){
+  return add([
+    sprite('bar', { animSpeed: 0.25 }),
+    pos(20, 40),
+    layer('player'),
+    'bar'
+  ])
+}
+
 
 const overworldScene = () => {
 
@@ -56,15 +65,17 @@ const overworldScene = () => {
 
     camScale(SCALE.value);
   
-    createCurrentLevel();
+    const pos = createCurrentLevel('exterior');
 
     addFire();
+
+    addBar();
   
     addDog();
 
     addMentor();
 
-    addPlayer();
+    addPlayer(pos);
 
     playerControls();
 
@@ -80,6 +91,7 @@ const overworldScene = () => {
 
     const fire = get('fire')[0];
     fire.play('burn');
+
 
     // there's no spatial hashing yet, if too many blocks causing lag, consider hard disabling collision resolution from blocks far away by turning off 'solid'
     // action("flower", (b) => {

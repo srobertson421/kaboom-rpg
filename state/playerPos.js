@@ -3,4 +3,6 @@ import { vec2 } from '../engine.js';
 
 const playerPos = new Observable(vec2(100, 100));
 
+export const storedPosition = new Observable(vec2(0, 0));
+
 export default playerPos;
