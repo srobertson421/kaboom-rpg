@@ -26,7 +26,7 @@ loadSprite('bar', '/assets/house1.png', {
   sliceX: 2,
   sliceY: 2,
   anims: {
-    smoke: [2,3]
+    smoke: {from: 2, to: 3}
   }
 });
 
@@ -34,10 +34,10 @@ loadSprite('character', '/assets/wizard.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    walkDown: [1,2],
-    walkLeft: [7,8],
-    walkRight: [10,11],
-    walkUp: [4,5]
+    walkDown: {from: 1, to: 2},
+    walkLeft: {from: 7, to: 8},
+    walkRight: {from: 10, to: 11},
+    walkUp: {from: 4, to: 5}
   }
 });
 
@@ -45,10 +45,10 @@ loadSprite('blue_robe', '/assets/wizard_robe.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    walkDown: [1,2],
-    walkLeft: [7,8],
-    walkRight: [10,11],
-    walkUp: [4,5]
+    walkDown: {from: 1, to: 2},
+    walkLeft: {from: 7, to: 8},
+    walkRight: {from: 10, to: 11},
+    walkUp: {from: 4, to: 5}
   }
 })
 
@@ -56,10 +56,10 @@ loadSprite('blue_robe_staff', '/assets/robe_wizard_staff.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    walkDown: [1,2],
-    walkLeft: [7,8],
-    walkRight: [10,11],
-    walkUp: [4,5]
+    walkDown: {from: 1, to: 2},
+    walkLeft: {from: 7, to: 8},
+    walkRight: {from: 10, to: 11},
+    walkUp: {from: 4, to: 5}
   }
 })
 
@@ -67,10 +67,10 @@ loadSprite('naked_staff', '/assets/naked_wizard_staff.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    walkDown: [1,2],
-    walkLeft: [7,8],
-    walkRight: [10,11],
-    walkUp: [4,5]
+    walkDown: {from: 1, to: 2},
+    walkLeft: {from: 7, to: 8},
+    walkRight: {from: 10, to: 11},
+    walkUp: {from: 4, to: 5}
   }
 })
 
@@ -83,7 +83,7 @@ loadSprite('fire', '/assets/camp_fire.png', {
   sliceX: 3,
   sliceY: 3,
   anims: {
-    burn: [0,6]
+    burn: {from: 0, to: 6}
   }
 });
 
@@ -91,10 +91,10 @@ loadSprite('mentor', '/assets/old_wizard.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    walkDown: [1,2],
-    walkRight: [7,8],
-    walkLeft: [10,11],
-    walkUp: [4,5]
+    walkDown: {from: 1, to: 2},
+    walkLeft: {from: 7, to: 8},
+    walkRight: {from: 10, to: 11},
+    walkUp: {from: 4, to: 5}
   }
 });
 
@@ -102,11 +102,11 @@ loadSprite('dog', '/assets/dog_wizard.png', {
   sliceX: 3,
   sliceY: 4,
   anims: {
-    sitWag: [0,1],
-    walkDown: [2,3],
-    walkUp: [4,5],
-    walkLeft: [6,7],
-    walkRight: [8,9]
+    sitWag: {from: 0, to: 1},
+    walkDown: {from: 2, to: 3},
+    walkUp: {from: 4, to: 5},
+    walkLeft: {from: 6, to: 7},
+    walkRight: {from: 8, to: 9}
   }
 });
 
@@ -115,7 +115,7 @@ loadSprite('dogAura', '/assets/dog_aura.png', {
   sliceX: 3,
   sliceY: 3,
   anims: {
-    aura: [0,7]
+    aura: {from: 0, to: 7}
   }
 });
 
